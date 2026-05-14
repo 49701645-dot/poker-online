@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Texas Hold'em Online</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        :root {
+            --table-green: radial-gradient(ellipse at center, #2e6b40 0%, #173b22 100%);
+            --wood: #4a2f1d; --gold: #d4af37; --bg-dark: #0a0a0a; --text-light: #f5f5f5;
+            --card-w: 75px; --card-h: 110px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; }
+        body { background-color: var(--bg-dark); color: var(--text-light); height: 100vh; overflow: hidden; display: flex; }
+
+        /* LOBBY & OVERLAYS */
+        .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; }
+        .hidden { display: none !important; }
+        .menu-box { background: #1a1a1a; padding: 40px; border-radius: 15px; border: 2px solid var(--gold); text-align: center; width: 350px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
+        h1 { color: var(--gold); margin-bottom: 20px; font-size: 2rem; }
+        .input-text { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 5px; border: 1px solid #444; background: #222; color: white; font-size: 1rem; }
+        .btn { background: linear-gradient(180deg, #d4af37, #aa8c2c); color: #000; border: none; padding: 12px 20px; font-size: 1.1rem; font-weight: bold; border-radius: 8px; cursor: pointer; width: 100%; box-shadow: 0 4px 6px rgba(0,0,0,0.4); }
+        .btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+        .btn:disabled { background: #444; color: #777; cursor: not-allowed; box-shadow: none; transform: none; }
+        .btn-red { background: linear-gradient(180deg, #e53935, #b71c1c); color: white; width: auto; }
+        .btn-blue { background: linear-gradient(180deg, #1e88e5, #0d47a1); color: white; width: auto; }
+        .btn-orange { background: linear-gradient(180deg, #fb8c00, #e65100); color: white; width: auto; }
+
+        /* LAYOUT PRINCIPAL */
+        .main-layout { display: flex; width: 100%; height: 100%; }
+        .game-col { flex: 1; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; padding-bottom: 80px;}
+        .chat-col { width: 320px; background: #111; border-left: 2px solid var(--gold); display: flex; flex-direction: column; }
+
+        /* MESA Y ZONAS */
+        .poker-table { position: relative; width: 90%; max-width: 950px; height: 60%; background: var(--table-green); border-radius: 500px; border: 15px solid var(--wood); display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: inset 0 0 50px rgba(0,0,0,0.8); }
+        .player-area { position: absolute; z-index: 10; display: flex; flex-direction: column; align-items: center; width: 100%; transition: 0.3s; }
+        .p2-area { top: -25px; }
+        .p1-area { bottom: -25px; }
+        .community-area { position: absolute; display: flex; flex-direction: column; align-items: center; z-index: 10; }
+
+        /* PANELES DE INFORMACIÓN */
+        .info-panel { background: rgba(0,0,0,0.85); padding: 8px 20px; border-radius: 20px; border: 1px solid #444; display: flex; gap: 15px; align-items: center; margin-bottom: 10px; }
+        .info-panel.active-turn { box-shadow: 0 0 20px var(--gold); border-color: var(--gold); }
+        .dealer-btn { background: #fff; color: #000; width: 22px; height: 22px; border-radius: 50%; font-size: 0.75rem; font-weight: bold; display: flex; align-items: center; justify-content: center; border: 2px solid #000; }
+        .pot-display { background: rgba(0,0,0,0.9); padding: 12px 25px; border-radius: 25px; color: var(--gold); font-size: 1.3rem; font-weight: bold; border: 2px solid var(--gold); margin-bottom: 15px; }
+
+        /* CARTAS */
+        .cards-container { display: flex; gap: 10px; perspective: 1000px; min-height: var(--card-h); }
+        .card { width: var(--card-w); height: var(--card-h); border-radius: 6px; border: 1px solid #ccc; background: white; color: black; display: flex; flex-direction: column; justify-content: space-between; padding: 5px; font-weight: bold; font-size: 1.2rem; box-shadow: 2px 2px 8px rgba(0,0,0,0.5); }
+        .card.red { color: #d32f2f; }
+        /* Carta trasera (oculta) */
+        .card.hidden-card { background: repeating-linear-gradient(45deg, #0b2e59, #0b2e59 5px, #154360 5px, #154360 10px); border: 2px solid #fff; color: transparent; }
+        .card-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 2.5rem; }
+        .card-br { align-self: flex-end; transform: rotate(180deg); }
+
+        /* CONTROLES INFERIORES */
+        .controls { position: absolute; bottom: 0; left: 0; width: 100%; background: #0a0a0a; padding: 15px; display: flex; justify-content: center; gap: 15px; border-top: 2px solid var(--gold); z-index: 20; transition: opacity 0.3s; }
+        .controls.disabled { opacity: 0.3; pointer-events: none; }
+        .slider-container { display: flex; align-items: center; gap: 10px; background: #222; padding: 0 15px; border-radius: 8px; border: 1px solid #444; }
+        input[type="range"] { accent-color: var(--gold); width: 140px; }
+
+        /* CHAT Y LOGS */
+        .chat-box { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 8px; font-size: 0.95rem; }
+        .chat-input { display: flex; padding: 10px; background: #222; border-top: 1px solid #444; }
+        .chat-input input { flex: 1; padding: 10px; border-radius: 5px; border: none; background: #333; color: white; outline: none; }
+        .chat-input button { background: var(--gold); border: none; padding: 10px 15px; border-radius: 5px; font-weight: bold; margin-left: 5px; cursor: pointer; }
+        
+        .log-entry { padding: 6px; border-radius: 5px; background: rgba(255,255,255,0.05); border-left: 3px solid transparent; }
+        .log-entry.alert { color: var(--gold); font-weight: bold; text-align: center; border: none; border-bottom: 1px solid var(--gold); }
+        .log-entry.action { border-left-color: #81c784; color: #ccc; }
+        .chat-msg span { font-weight: bold; color: #1e88e5; }
+        
+        #room-info { position: absolute; top: 15px; left: 20px; color: #bbb; font-weight: bold; font-size: 1.1rem; }
+        .phase-indicator { position: absolute; top: 15px; right: 20px; color: #81c784; font-weight: bold; font-size: 1.3rem; letter-spacing: 1px; }
+
+        @media (max-width: 900px) {
+            .main-layout { flex-direction: column; }
+            .chat-col { width: 100%; height: 250px; border-left: none; border-top: 2px solid var(--gold); }
+            :root { --card-w: 55px; --card-h: 80px; }
+            .card-center { font-size: 1.8rem; }
+            .poker-table { height: 50%; width: 95%; }
+            .controls { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="lobby" class="overlay">
+        <div class="menu-box">
+            <h1>Hold'em Online</h1>
+            <input type="text" id="player-name" class="input-text" placeholder="Ingresa tu Nombre" value="">
+            <button class="btn" onclick="createRoom()">Crear Sala Privada</button>
+            <div style="margin: 20px 0; color: #888; font-weight: bold;">Ó</div>
+            <input type="text" id="room-code" class="input-text" placeholder="Código de Sala (POKER-XXXX)">
+            <button class="btn btn-blue" onclick="joinRoom()" style="width: 100%">Unirse a Sala</button>
+        </div>
+    </div>
+
+    <div class="main-layout hidden" id="game-container">
+        
+        <div class="game-col">
+            <div id="room-info">SALA: <span id="ui-room-id" style="color:var(--gold);"></span></div>
+            <div class="phase-indicator" id="phase-ui">PRE-FLOP</div>
+
+            <div class="poker-table">
+                <div class="player-area p2-area">
+                    <div class="info-panel" id="p2-info">
+                        <span class="dealer-btn hidden" id="d-p2">D</span>
+                        <span id="p2-name" style="font-weight:bold;color:var(--text-light); font-size: 1.1rem;">Esperando Rival...</span>
+                        <span style="color:#81c784;font-weight:bold;">💰 <span id="p2-chips">0</span></span>
+                        <span style="color:#ffeb3b; font-weight:bold;">Apu: <span id="p2-bet">0</span></span>
+                    </div>
+                    <div class="cards-container" id="p2-cards"></div>
+                </div>
+
+                <div class="community-area">
+                    <div class="pot-display">POT: <span id="pot-ui">0</span></div>
+                    <div class="cards-container" id="community-cards"></div>
+                </div>
+
+                <div class="player-area p1-area">
+                    <div class="cards-container" id="p1-cards"></div>
+                    <div class="info-panel" id="p1-info">
+                        <span class="dealer-btn hidden" id="d-p1">D</span>
+                        <span id="p1-name" style="font-weight:bold;color:var(--text-light); font-size: 1.1rem;">Yo</span>
+                        <span style="color:#81c784;font-weight:bold;">💰 <span id="p1-chips">0</span></span>
+                        <span style="color:#ffeb3b; font-weight:bold;">Apu: <span id="p1-bet">0</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="controls disabled" id="controls">
+                <button class="btn btn-red" onclick="sendAction('fold')">Fold</button>
+                <button class="btn" id="btn-check-call" onclick="sendAction('call')">Check</button>
+                <div class="slider-container">
+                    <button class="btn btn-blue" id="btn-raise" onclick="sendAction('raise')">Raise</button>
+                    <input type="range" id="raise-slider" min="0" max="5000" step="10" oninput="updateSliderUI()">
+                    <span id="raise-val" style="color:white;min-width:40px;text-align:right; font-weight:bold;">200</span>
+                </div>
+                <button class="btn btn-orange" onclick="sendAction('allin')">All-In</button>
+            </div>
+        </div>
+
+        <div class="chat-col">
+            <div class="chat-box" id="chat-box"></div>
+            <div class="chat-input">
+                <input type="text" id="chat-msg" placeholder="Escribe al rival..." onkeypress="if(event.key==='Enter') sendChat()">
+                <button onclick="sendChat()">Enviar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const socket = io(); // Conexión automática usando el mismo host
+        let currentRoom = null;
+        let myId = null;
+
+        const SUITS = { 'S': {char: '♠', color: 'black'}, 'H': {char: '♥', color: 'red'}, 'D': {char: '♦', color: 'red'}, 'C': {char: '♣', color: 'black'} };
+        const PHASES = ['PRE-FLOP', 'FLOP', 'TURN', 'RIVER', 'SHOWDOWN'];
+
+        // --- MANEJO DE SALAS ---
+        function createRoom() {
+            const name = document.getElementById('player-name').value || "Jugador 1";
+            socket.emit('createRoom', name);
+        }
+
+        function joinRoom() {
+            const name = document.getElementById('player-name').value || "Jugador 2";
+            const code = document.getElementById('room-code').value.trim().toUpperCase();
+            if(code) socket.emit('joinRoom', {roomId: code, playerName: name});
+        }
+
+        socket.on('roomCreated', (roomId) => { enterRoom(roomId); });
+        socket.on('roomJoined', (roomId) => { enterRoom(roomId); });
+        socket.on('errorMsg', (msg) => { alert(msg); location.reload(); });
+
+        function enterRoom(roomId) {
+            currentRoom = roomId;
+            myId = socket.id;
+            document.getElementById('lobby').classList.add('hidden');
+            document.getElementById('game-container').classList.remove('hidden');
+            document.getElementById('ui-room-id').innerText = roomId;
+            logSystem(`Unido a la sala. Comparte este código: ${roomId}`, 'alert');
+        }
+
+        // --- SISTEMA DE CHAT E HISTORIAL ---
+        function sendChat() {
+            const input = document.getElementById('chat-msg');
+            if(input.value.trim() === '') return;
+            socket.emit('chatMsg', {roomId: currentRoom, msg: input.value});
+            input.value = '';
+        }
+
+        socket.on('chatMsg', (data) => {
+            logSystem(`<span style="color:#1e88e5">${data.sender}:</span> <span style="color:white">${data.msg}</span>`, 'chat-msg');
+        });
+
+        socket.on('gameLog', (data) => { logSystem(data.msg, data.type); });
+
+        function logSystem(html, type='') {
+            const box = document.getElementById('chat-box');
+            const d = document.createElement('div');
+            d.className = `log-entry ${type}`;
+            d.innerHTML = html;
+            box.appendChild(d);
+            box.scrollTop = box.scrollHeight;
+        }
+
+        // --- RENDERIZADO DEL JUEGO (Dibuja lo que manda el servidor) ---
+        socket.on('gameState', (state) => {
+            if(!state) return;
+            
+            // Determinar quién soy yo y quién es el rival
+            let me = state.players.find(p => p.id === myId);
+            let rival = state.players.find(p => p.id !== myId) || null;
+
+            document.getElementById('pot-ui').innerText = state.pot;
+            document.getElementById('phase-ui').innerText = PHASES[state.phaseIdx] || "ESPERANDO";
+
+            // Comunitarias
+            document.getElementById('community-cards').innerHTML = state.community.map(c => buildCard(c)).join('');
+
+            // Mi UI
+            if(me) {
+                document.getElementById('p1-name').innerText = me.name;
+                document.getElementById('p1-chips').innerText = me.chips;
+                document.getElementById('p1-bet').innerText = me.bet;
+                document.getElementById('p1-cards').innerHTML = me.cards.map(c => buildCard(c)).join('');
+                document.getElementById('d-p1').classList.toggle('hidden', state.players.findIndex(p=>p.id===myId) !== state.dealerIdx);
+                document.getElementById('p1-info').classList.toggle('active-turn', state.handActive && state.players[state.activeIdx].id === myId);
+
+                updateControls(me, state);
+            }
+
+            // UI del Rival
+            if(rival) {
+                document.getElementById('p2-name').innerText = rival.name;
+                document.getElementById('p2-chips').innerText = rival.chips;
+                document.getElementById('p2-bet').innerText = rival.bet;
+                document.getElementById('p2-cards').innerHTML = rival.cards.map(c => buildCard(c)).join('');
+                document.getElementById('d-p2').classList.toggle('hidden', state.players.findIndex(p=>p.id!==myId) !== state.dealerIdx);
+                document.getElementById('p2-info').classList.toggle('active-turn', state.handActive && state.players[state.activeIdx].id === rival.id);
+            }
+        });
+
+        function buildCard(c) {
+            // El backend envía { hidden: true } para las cartas del rival antes del Showdown
+            if (c.hidden) return `<div class="card hidden-card"></div>`;
+            const s = SUITS[c.suit];
+            const displayRank = c.rank === 'T' ? '10' : c.rank;
+            return `
+                <div class="card ${s.color}">
+                    <div style="text-align: left; line-height: 1;">${displayRank}<br><span style="font-size:0.8em">${s.char}</span></div>
+                    <div class="card-center">${s.char}</div>
+                    <div class="card-br" style="text-align: left; line-height: 1;">${displayRank}<br><span style="font-size:0.8em">${s.char}</span></div>
+                </div>
+            `;
+        }
+
+        // --- CONTROLES Y ACCIONES ---
+        function updateControls(me, state) {
+            const isMyTurn = state.handActive && state.players[state.activeIdx].id === myId;
+            const controls = document.getElementById('controls');
+            
+            if (!isMyTurn) {
+                controls.classList.add('disabled');
+                return;
+            }
+            controls.classList.remove('disabled');
+
+            const toCall = state.highestBet - me.bet;
+            document.getElementById('btn-check-call').innerText = toCall > 0 ? `Call (${toCall})` : 'Check';
+
+            const slider = document.getElementById('raise-slider');
+            const btnRaise = document.getElementById('btn-raise');
+            
+            slider.min = state.minRaise;
+            slider.max = me.chips + me.bet;
+            if (parseInt(slider.value) < state.minRaise) slider.value = state.minRaise;
+            updateSliderUI();
+
+            if (me.chips <= toCall) {
+                btnRaise.disabled = true; slider.disabled = true;
+            } else {
+                btnRaise.disabled = false; slider.disabled = false;
+            }
+        }
+
+        function updateSliderUI() { 
+            document.getElementById('raise-val').innerText = document.getElementById('raise-slider').value; 
+        }
+
+        function sendAction(action) {
+            const amount = action === 'raise' ? parseInt(document.getElementById('raise-slider').value) : 0;
+            socket.emit('playerAction', { roomId: currentRoom, action, amount });
+            document.getElementById('controls').classList.add('disabled'); // Desactiva al instante para evitar clicks dobles
+        }
+    </script>
+</body>
+</html>
