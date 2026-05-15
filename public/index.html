@@ -152,10 +152,21 @@ input{outline:none;font-family:inherit}
 #screen-game{background:radial-gradient(ellipse at 50% 50%, #0a1a10 0%, #060d0a 100%);
   flex-direction:column;position:relative}
 #game-layout{display:flex;width:100%;height:100%;overflow:hidden}
-#game-main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;padding:8px;min-width:0}
-#game-sidebar{width:300px;min-width:300px;display:none;flex-direction:column;background:rgba(0,0,0,0.46);
-  border-left:1px solid rgba(201,168,76,0.16);height:100%;overflow:hidden;backdrop-filter:blur(10px);
-  flex-shrink:0}
+#game-main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  position:relative;padding:8px;min-width:0;overflow:hidden;
+  transition:padding-right 0.3s}
+#game-main.sidebar-open{padding-right:300px}
+
+/* Sidebar: fixed on the right, full height, never pushes the table */
+#game-sidebar{
+  position:fixed;right:0;top:0;bottom:0;
+  width:300px;
+  display:none;flex-direction:column;
+  background:rgba(6,13,10,0.94);
+  border-left:1px solid rgba(201,168,76,0.16);
+  z-index:50;
+  backdrop-filter:blur(14px);
+}
 #game-sidebar.in-room{display:flex}
 
 /* ---- TOP BAR ---- */
@@ -178,8 +189,13 @@ input{outline:none;font-family:inherit}
 .top-btn-host:hover{background:rgba(201,168,76,0.3)}
 
 /* ---- TABLE ---- */
-#table-wrap{position:relative;width:min(1200px,calc(100vw - 330px));height:min(700px,calc(100vh - 140px));margin:50px auto 0;overflow:visible}
-@media(min-width:1400px){#table-wrap{width:min(1400px,calc(100vw - 340px));height:min(800px,calc(100vh - 140px))}}
+#table-wrap{
+  position:relative;
+  width:min(1400px, calc(100vw - 340px));
+  height:min(780px, calc(100vh - 100px));
+  margin:50px auto 0;
+  overflow:visible;
+}
 #poker-table{
   position:absolute;inset:0;
   background:radial-gradient(ellipse at 50% 40%, #1a7a42, #0d5c2e, #083d1e);
@@ -355,16 +371,15 @@ input{outline:none;font-family:inherit}
 /* ---- ACTIONS HUD ---- */
 #actions-hud{
   position:absolute;bottom:10px;left:50%;transform:translateX(-50%);
-  display:flex;flex-direction:column;align-items:center;gap:8px;
-  z-index:20;width:min(520px,96vw);
-  padding-bottom:env(safe-area-inset-bottom,0px);
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  z-index:20;width:min(520px,95vw);
 }
-.actions-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.actions-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 .action-btn{
-  padding:11px 20px;border-radius:12px;font-size:0.9rem;font-weight:700;
-  letter-spacing:0.04em;text-transform:uppercase;
+  padding:12px 24px;border-radius:12px;font-size:0.95rem;font-weight:700;
+  letter-spacing:0.05em;text-transform:uppercase;
   transition:all 0.2s var(--ease);box-shadow:0 4px 16px rgba(0,0,0,0.4);
-  min-width:90px;position:relative;overflow:hidden;
+  min-width:100px;position:relative;overflow:hidden;
 }
 .action-btn::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,0);transition:background 0.2s}
 .action-btn:hover::after{background:rgba(255,255,255,0.08)}
@@ -402,10 +417,10 @@ input{outline:none;font-family:inherit}
 
 /* ---- MY HAND INFO ---- */
 #my-hand-info{
-  position:absolute;bottom:calc(80px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);
-  background:rgba(0,0,0,0.6);padding:5px 14px;border-radius:20px;
-  border:1px solid rgba(201,168,76,0.2);font-size:0.82rem;color:var(--gold2);
-  display:none;white-space:nowrap;z-index:19;pointer-events:none;
+  position:absolute;bottom:100px;left:50%;transform:translateX(-50%);
+  background:rgba(0,0,0,0.6);padding:6px 16px;border-radius:20px;
+  border:1px solid rgba(201,168,76,0.2);font-size:0.85rem;color:var(--gold2);
+  display:none;
 }
 
 /* ---- SIDEBAR ---- */
@@ -413,14 +428,29 @@ input{outline:none;font-family:inherit}
 .sidebar-tab{flex:1;padding:12px;text-align:center;font-size:0.85rem;font-weight:700;
   color:var(--text3);cursor:pointer;transition:all 0.2s;border-bottom:2px solid transparent}
 .sidebar-tab.active{color:var(--gold);border-bottom-color:var(--gold)}
-.sidebar-content{flex:1;overflow:hidden;padding:0;display:flex;flex-direction:column;min-height:0}
-#tab-chat{display:flex;flex-direction:column;flex:1;min-height:0;padding:8px 12px}
-#tab-players{display:none;flex:1;overflow-y:auto;padding:12px}
-#tab-host{display:none;padding:12px}
+
+/* sidebar-content fills remaining space and clips overflow */
+.sidebar-content{flex:1;overflow:hidden;min-height:0;display:flex;flex-direction:column}
+
+#tab-chat{
+  display:flex;flex-direction:column;
+  flex:1;min-height:0;
+  padding:8px 12px 0;
+}
+#tab-players{display:none;overflow-y:auto;padding:12px;flex:1}
+#tab-host{display:none;overflow-y:auto;padding:12px;flex:1}
 
 /* ---- CHAT ---- */
-#chat-messages{display:flex;flex-direction:column;gap:6px;flex:1;overflow-y:auto;min-height:0;padding-bottom:4px}
-.chat-msg{font-size:0.82rem;line-height:1.4;padding:6px 10px;border-radius:8px;flex-shrink:0}
+#chat-messages{
+  flex:1;
+  overflow-y:auto;
+  min-height:0;
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+  padding-bottom:6px;
+}
+.chat-msg{font-size:0.82rem;line-height:1.4;padding:6px 10px;border-radius:8px}
 .chat-msg-player{background:rgba(255,255,255,0.05);border-left:2px solid var(--gold3)}
 .chat-msg-system{background:rgba(0,0,0,0.3);color:var(--text2);font-style:italic;border-left:2px solid rgba(255,255,255,0.1)}
 .chat-msg-win{background:rgba(39,174,96,0.1);color:#27ae60;border-left:2px solid #27ae60}
@@ -434,7 +464,7 @@ input{outline:none;font-family:inherit}
 .chat-msg-champion{background:rgba(201,168,76,0.15);color:var(--gold2);border-left:2px solid var(--gold);font-weight:700}
 .chat-msg-name{color:var(--gold2);font-weight:700}
 .chat-msg-time{color:var(--text3);font-size:0.7rem;margin-left:6px}
-#chat-input-row{display:flex;gap:8px;padding:8px 12px;border-top:1px solid rgba(201,168,76,0.1);flex-shrink:0}
+#chat-input-row{display:flex;gap:8px;padding:8px 12px;border-top:1px solid rgba(201,168,76,0.1)}
 #chat-input{flex:1;padding:8px 12px;background:rgba(0,0,0,0.4);
   border:1px solid rgba(201,168,76,0.2);border-radius:8px;color:var(--text);font-size:0.85rem}
 #chat-send{padding:8px 14px;background:rgba(201,168,76,0.2);color:var(--gold);
@@ -620,33 +650,24 @@ input{outline:none;font-family:inherit}
 @media(max-width:768px){
   #game-sidebar{display:none}
   #game-sidebar.in-room{display:flex}
-  #game-sidebar.mobile-open{display:flex;position:fixed;right:0;top:0;bottom:0;z-index:100;width:80vw;max-width:300px;box-shadow:-20px 0 60px rgba(0,0,0,0.8)}
-  #table-wrap{width:99vw!important;height:calc(100vh - 200px);min-height:260px;margin-top:52px}
-  #game-main{padding:4px}
-  .seat-avatar{width:38px;height:38px;font-size:0.95rem}
-  .seat-name{font-size:0.6rem;padding:2px 5px;max-width:65px}
-  .card{width:34px;height:50px;font-size:0.72rem}
-  .card-community{width:42px;height:60px}
-  .card-rank,.card-rank-bot{font-size:0.6rem;top:2px;left:4px}
+  #game-sidebar.mobile-open{display:flex;position:fixed;right:0;top:0;bottom:0;z-index:100;width:280px;box-shadow:-20px 0 60px rgba(0,0,0,0.8)}
+  #table-wrap{width:96vw;height:58vh;min-height:280px}
+  .seat-avatar{width:40px;height:40px;font-size:1rem}
+  .seat-name{font-size:0.65rem;padding:2px 6px;max-width:70px}
+  .card{width:36px;height:52px;font-size:0.75rem}
+  .card-community{width:44px;height:62px}
+  .card-rank,.card-rank-bot{font-size:0.65rem;top:2px;left:4px}
   .card-rank-bot{bottom:2px;right:4px}
-  .card-suit-big{font-size:1.1rem}
-  .card-community .card-suit-big{font-size:1.3rem}
-  .action-btn{padding:9px 12px;font-size:0.8rem;min-width:72px}
-  #actions-hud{width:100vw;padding:0 4px 6px;bottom:0;border-radius:0}
-  .raise-row{flex-wrap:wrap;gap:6px;padding:8px}
-  .raise-input{width:80px}
+  .card-suit-big{font-size:1.2rem}
+  .card-community .card-suit-big{font-size:1.4rem}
+  .action-btn{padding:10px 16px;font-size:0.85rem;min-width:80px}
+  #actions-hud{width:98vw}
+  #table-wrap{margin-top:55px}
 }
 @media(max-width:480px){
-  #table-wrap{height:calc(100vh - 215px);min-height:240px}
-  .action-btn{padding:8px 10px;font-size:0.75rem;min-width:64px}
-  .actions-row{gap:6px}
-  .raise-row{flex-direction:column;align-items:stretch}
-  .raise-presets{justify-content:center}
-  #actions-hud{gap:6px}
-  .seat-avatar{width:34px;height:34px;font-size:0.85rem}
-  .seat-name{font-size:0.55rem;max-width:55px}
-  .card{width:30px;height:44px;font-size:0.65rem}
-  .card-community{width:38px;height:55px}
+  .action-btn{padding:8px 12px;font-size:0.8rem;min-width:70px}
+  .raise-row{flex-direction:column}
+  #table-wrap{height:54vh}
 }
 </style>
 </head>
@@ -1805,12 +1826,10 @@ function switchTab(tab) {
   if (tabs[0]) tabs[0].classList.toggle('active', tab==='chat');
   if (tabs[1]) tabs[1].classList.toggle('active', tab==='players');
   if (tabs[2]) tabs[2].classList.toggle('active', tab==='host');
-  document.getElementById('tab-chat').style.display = tab==='chat'?'flex':'none';
+  document.getElementById('tab-chat').style.display = tab==='chat'?'block':'none';
   document.getElementById('tab-players').style.display = tab==='players'?'block':'none';
   document.getElementById('tab-host').style.display = tab==='host'?'block':'none';
   document.getElementById('host-panel').style.display = tab==='host'?'block':'none';
-  // Keep chat input visible only when on chat tab
-  document.getElementById('chat-input-row').style.display = tab==='chat'?'flex':'none';
 }
 
 // ============================================================ NOTIFICATIONS
