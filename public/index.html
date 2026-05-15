@@ -155,12 +155,12 @@ input{outline:none;font-family:inherit}
 #game-main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
   position:relative;padding:8px;min-width:0;overflow:hidden;
   transition:padding-right 0.3s}
-#game-main.sidebar-open{padding-right:300px}
+#game-main.sidebar-open{padding-right:240px}
 
 /* Sidebar: fixed on the right, full height, never pushes the table */
 #game-sidebar{
   position:fixed;right:0;top:0;bottom:0;
-  width:300px;
+  width:240px;
   display:none;flex-direction:column;
   background:rgba(6,13,10,0.94);
   border-left:1px solid rgba(201,168,76,0.16);
@@ -191,9 +191,9 @@ input{outline:none;font-family:inherit}
 /* ---- TABLE ---- */
 #table-wrap{
   position:relative;
-  width:min(1400px, calc(100vw - 340px));
-  height:min(780px, calc(100vh - 100px));
-  margin:50px auto 0;
+  width:min(1200px, calc(100vw - 280px));
+  height:min(720px, calc(100vh - 120px));
+  margin:55px auto 0;
   overflow:visible;
 }
 #poker-table{
@@ -224,14 +224,15 @@ input{outline:none;font-family:inherit}
 }
 #community-area{
   position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  display:flex;align-items:center;gap:10px;z-index:5;
+  display:flex;align-items:center;gap:12px;z-index:5;
   flex-direction:column;
 }
-#community-cards{display:flex;gap:8px;justify-content:center}
+#community-cards{display:flex;gap:10px;justify-content:center}
 #pot-display{
-  display:flex;align-items:center;gap:10px;margin-top:14px;
-  background:rgba(0,0,0,0.5);padding:6px 16px;border-radius:20px;
-  border:1px solid rgba(201,168,76,0.2);
+  display:flex;align-items:center;gap:10px;margin-top:16px;
+  background:rgba(0,0,0,0.6);padding:8px 20px;border-radius:20px;
+  border:1px solid rgba(201,168,76,0.35);
+  box-shadow:0 2px 12px rgba(0,0,0,0.6);
 }
 #pot-chips{display:flex;gap:4px}
 #pot-amount{font-family:'Cinzel',serif;font-size:1.08rem;color:var(--gold2);font-weight:700;white-space:nowrap}
@@ -443,12 +444,14 @@ input{outline:none;font-family:inherit}
 /* ---- CHAT ---- */
 #chat-messages{
   flex:1;
-  overflow-y:auto;
+  overflow-y:scroll;
   min-height:0;
+  max-height:calc(100vh - 110px);
   display:flex;
   flex-direction:column;
   gap:5px;
   padding-bottom:6px;
+  scroll-behavior:smooth;
 }
 .chat-msg{font-size:0.82rem;line-height:1.4;padding:6px 10px;border-radius:8px}
 .chat-msg-player{background:rgba(255,255,255,0.05);border-left:2px solid var(--gold3)}
@@ -632,8 +635,8 @@ input{outline:none;font-family:inherit}
 .seat-avatar{z-index:2}
 .seat-stack{background:rgba(0,0,0,.55);padding:2px 8px;border-radius:10px;max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .seat-bet{top:50%;left:50%;transform:translate(-50%,-105%);z-index:5;background:rgba(0,0,0,.88);font-size:.7rem;white-space:nowrap}
-.seat-bottom{transform:translate(-50%,-60%)}
-.seat-top{transform:translate(-50%,-40%)}
+.seat-bottom{transform:translate(-50%,-70%)}
+.seat-top{transform:translate(-50%,-30%)}
 .seat-side{transform:translate(-50%,-50%)}
 .seat-bottom .seat-cards{order:1;margin-bottom:3px}
 .seat-bottom .seat-avatar{order:2}
@@ -650,7 +653,7 @@ input{outline:none;font-family:inherit}
 @media(max-width:768px){
   #game-sidebar{display:none}
   #game-sidebar.in-room{display:flex}
-  #game-sidebar.mobile-open{display:flex;position:fixed;right:0;top:0;bottom:0;z-index:100;width:280px;box-shadow:-20px 0 60px rgba(0,0,0,0.8)}
+  #game-sidebar.mobile-open{display:flex;position:fixed;right:0;top:0;bottom:0;z-index:100;width:240px;box-shadow:-20px 0 60px rgba(0,0,0,0.8)}
   #table-wrap{width:96vw;height:58vh;min-height:280px}
   .seat-avatar{width:40px;height:40px;font-size:1rem}
   .seat-name{font-size:0.65rem;padding:2px 6px;max-width:70px}
@@ -1002,12 +1005,12 @@ function getAvatar(name) { return AVATARS[name.charCodeAt(0) % AVATARS.length]; 
 // ============================================================ SEAT POSITIONS
 const seatLayouts = {
   // index 0 is ALWAYS the current viewer when they are playing, so each player sees themselves abajo.
-  2:[{x:50,y:71,cls:'seat-bottom'},{x:50,y:18,cls:'seat-top'}],
-  3:[{x:50,y:72,cls:'seat-bottom'},{x:24,y:26,cls:'seat-top'},{x:76,y:26,cls:'seat-top'}],
-  4:[{x:50,y:72,cls:'seat-bottom'},{x:17,y:54,cls:'seat-side'},{x:50,y:18,cls:'seat-top'},{x:83,y:54,cls:'seat-side'}],
-  5:[{x:50,y:72,cls:'seat-bottom'},{x:18,y:61,cls:'seat-side'},{x:27,y:24,cls:'seat-top'},{x:73,y:24,cls:'seat-top'},{x:82,y:61,cls:'seat-side'}],
-  6:[{x:50,y:72,cls:'seat-bottom'},{x:20,y:63,cls:'seat-side'},{x:20,y:29,cls:'seat-side'},{x:50,y:18,cls:'seat-top'},{x:80,y:29,cls:'seat-side'},{x:80,y:63,cls:'seat-side'}],
-  7:[{x:50,y:72,cls:'seat-bottom'},{x:25,y:68,cls:'seat-side'},{x:15,y:44,cls:'seat-side'},{x:32,y:20,cls:'seat-top'},{x:68,y:20,cls:'seat-top'},{x:85,y:44,cls:'seat-side'},{x:75,y:68,cls:'seat-side'}]
+  2:[{x:50,y:78,cls:'seat-bottom'},{x:50,y:14,cls:'seat-top'}],
+  3:[{x:50,y:78,cls:'seat-bottom'},{x:22,y:22,cls:'seat-top'},{x:78,y:22,cls:'seat-top'}],
+  4:[{x:50,y:78,cls:'seat-bottom'},{x:14,y:54,cls:'seat-side'},{x:50,y:14,cls:'seat-top'},{x:86,y:54,cls:'seat-side'}],
+  5:[{x:50,y:78,cls:'seat-bottom'},{x:15,y:63,cls:'seat-side'},{x:25,y:20,cls:'seat-top'},{x:75,y:20,cls:'seat-top'},{x:85,y:63,cls:'seat-side'}],
+  6:[{x:50,y:78,cls:'seat-bottom'},{x:16,y:65,cls:'seat-side'},{x:16,y:27,cls:'seat-side'},{x:50,y:14,cls:'seat-top'},{x:84,y:27,cls:'seat-side'},{x:84,y:65,cls:'seat-side'}],
+  7:[{x:50,y:78,cls:'seat-bottom'},{x:22,y:72,cls:'seat-side'},{x:12,y:44,cls:'seat-side'},{x:30,y:16,cls:'seat-top'},{x:70,y:16,cls:'seat-top'},{x:88,y:44,cls:'seat-side'},{x:78,y:72,cls:'seat-side'}]
 };
 function getSeatPositions(total) {
   const clamped = Math.min(Math.max(total, 2), 7);
