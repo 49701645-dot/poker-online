@@ -672,6 +672,20 @@ input{outline:none;font-family:inherit}
   .raise-row{flex-direction:column}
   #table-wrap{height:54vh}
 }
+
+/* ---- ROYAL PATCH RESPONSIVE / UI ---- */
+#my-hand-controls{position:absolute;left:50%;bottom:86px;transform:translateX(-50%);z-index:20;display:flex!important;gap:8px;align-items:center;justify-content:center;pointer-events:auto}
+#my-hand-controls[style*="none"]{display:none!important}
+#my-stack-pill{background:rgba(0,0,0,.75);border:1px solid rgba(201,168,76,.35);color:var(--gold2);padding:7px 12px;border-radius:999px;font-weight:800;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.45)}
+#exchange-panel{position:absolute;left:50%;bottom:150px;transform:translateX(-50%);z-index:30;background:rgba(8,20,14,.94);border:1px solid rgba(201,168,76,.45);border-radius:14px;padding:12px;box-shadow:0 12px 40px rgba(0,0,0,.65);text-align:center;min-width:260px}
+#exchange-title{color:var(--gold2);font-weight:900;margin-bottom:6px}#exchange-counter{color:var(--text2);margin-bottom:8px}.card.exchange-selected{outline:3px solid #3498db;transform:translateY(-10px) scale(1.04)}
+.sidebar-close{margin-left:auto;background:rgba(255,255,255,.08);color:var(--text);border-left:1px solid rgba(255,255,255,.08);padding:0 12px;font-size:1.2rem}.host-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.host-label,.host-grid label,.host-check{display:block;color:var(--text2);font-size:.82rem;margin:7px 0}.host-check input{margin-right:7px}
+.room-mode-pill{display:inline-block;padding:2px 7px;border-radius:999px;background:rgba(201,168,76,.16);color:var(--gold2);font-weight:800;font-size:.75rem;margin-left:6px}.mode-classic{background:rgba(52,152,219,.18);color:#7ec8ff}.mode-texas{background:rgba(201,168,76,.16);color:var(--gold2)}
+#community-area.classic-mode #community-cards:empty:before{content:'Póker clásico: sin cartas comunitarias';color:var(--text3);font-weight:700;letter-spacing:.06em}#community-area.classic-mode{min-height:84px}
+.seat.my-seat .seat-stack{display:block!important;color:var(--gold2);font-weight:900}.seat:not(.my-seat) .seat-stack.rival-hidden{display:none!important}.seat-status{font-size:.65rem;font-weight:800;color:var(--text2);background:rgba(0,0,0,.45);padding:2px 7px;border-radius:999px}.sidebar-hidden #game-sidebar{display:none!important}.sidebar-hidden #game-main{width:100%!important}
+@media(max-width:768px){#game-layout{display:block}#game-main{width:100%;height:100%}#game-sidebar.in-room{display:none}#game-sidebar.mobile-open{display:flex!important;position:fixed;right:0;top:0;bottom:0;z-index:100;width:min(86vw,300px);box-shadow:-20px 0 60px rgba(0,0,0,.8)}#table-wrap{width:98vw;height:calc(var(--vh,1vh)*56);margin-top:50px}#my-hand-controls{bottom:78px}.seat-stack{font-size:.62rem}.seat:not(.my-seat) .seat-stack{display:none!important}#exchange-panel{bottom:136px}.top-btn{padding:7px 9px;font-size:.75rem}.top-bar-left{min-width:0}.room-name-badge{max-width:115px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.card{width:34px!important;height:50px!important}.card-community{width:40px!important;height:58px!important}#actions-hud{bottom:4px}.actions-row{gap:5px}.action-btn{min-width:62px;padding:8px 8px;font-size:.75rem}}
+@media(max-width:480px){#table-wrap{height:calc(var(--vh,1vh)*53);min-height:310px}.seat-avatar{width:34px;height:34px}.seat-name{max-width:62px;font-size:.58rem}.seat-cards{gap:1px}.card{width:30px!important;height:44px!important}.card-community{width:34px!important;height:50px!important}#pot-display{transform:scale(.86)}#my-stack-pill{padding:5px 9px;font-size:.78rem}.host-grid{grid-template-columns:1fr}.lobby-header{gap:6px}.lobby-search{max-width:120px}}
+
 </style>
 </head>
 <body>
@@ -709,6 +723,7 @@ input{outline:none;font-family:inherit}
     <button class="btn btn-ghost btn-sm" onclick="showScreen('screen-menu')">← Volver</button>
     <div class="lobby-title">Salas Disponibles</div>
     <input class="lobby-search" id="lobby-search" placeholder="🔍 Buscar sala..." oninput="filterRooms()"/>
+    <select class="lobby-search" id="lobby-mode-filter" onchange="filterRooms()" style="max-width:160px"><option value="all">Todos</option><option value="texas">Texas</option><option value="classic">Clásico</option></select>
     <button class="btn btn-gold btn-sm" onclick="showCreateRoom()">+ Crear</button>
   </div>
   <div class="rooms-grid" id="rooms-grid">
@@ -728,7 +743,8 @@ input{outline:none;font-family:inherit}
           <div class="hand-badge" id="phase-text">Esperando</div>
         </div>
         <div class="top-bar-right">
-          <button class="top-btn top-btn-eye" id="btn-hide-cards" onclick="toggleHideCards()">👁 Ocultar</button>
+          <button class="top-btn top-btn-eye" id="btn-copy-link" onclick="copyRoomLink()">🔗 Link</button>
+          <button class="top-btn top-btn-eye" id="btn-open-sidebar" onclick="toggleSidebar()">💬 Panel</button>
           <button class="top-btn top-btn-host" id="btn-host-panel" onclick="toggleHostPanel()" style="display:none">👑 Admin</button>
           <button class="top-btn top-btn-leave" onclick="confirmLeave()">🚪 Salir</button>
         </div>
@@ -766,8 +782,18 @@ input{outline:none;font-family:inherit}
         </div>
       </div>
 
-      <!-- My hand info -->
+      <!-- My hand controls -->
       <div id="my-hand-info"></div>
+      <div id="my-hand-controls" style="display:none">
+        <span id="my-stack-pill">💰 0 fichas</span>
+        <button class="top-btn top-btn-eye" id="btn-hide-cards" onclick="toggleHideCards()">🙈 Ocultar cartas</button>
+      </div>
+      <div id="exchange-panel" style="display:none">
+        <div id="exchange-title">🔄 Cambio de cartas</div>
+        <div id="exchange-counter">Seleccionadas: 0/3</div>
+        <button class="btn btn-gold btn-sm" onclick="confirmExchange()">Cambiar seleccionadas</button>
+        <button class="btn btn-ghost btn-sm" onclick="skipExchange()">No cambiar</button>
+      </div>
 
       <!-- Actions HUD -->
       <div id="actions-hud" class="hidden">
@@ -820,7 +846,8 @@ input{outline:none;font-family:inherit}
       <div id="sidebar-tabs">
         <div class="sidebar-tab active" onclick="switchTab('chat')">💬 Chat</div>
         <div class="sidebar-tab" onclick="switchTab('players')">👥 Jugadores</div>
-        
+        <div class="sidebar-tab" id="tab-host-btn" onclick="switchTab('host')" style="display:none">👑 Host</div>
+        <button class="sidebar-close" onclick="toggleSidebar(false)">×</button>
       </div>
       <div class="sidebar-content" id="sidebar-content">
         <!-- Chat -->
@@ -841,6 +868,24 @@ input{outline:none;font-family:inherit}
                 <button class="host-btn hbtn-restart" onclick="restartGame()">🔄 Reiniciar</button>
                 <button class="host-btn hbtn-end" onclick="endGame()">🛑 Terminar</button>
               </div>
+            </div>
+            <div class="host-section">
+              <div class="host-section-title">Personalización avanzada</div>
+              <label class="host-label">Chat<select id="set-chatMode" class="form-input"><option value="full">Chat completo</option><option value="alerts">Solo alertas</option><option value="disabled">Chat desactivado</option></select></label>
+              <div class="host-grid">
+                <label>SB<input id="set-smallBlind" class="form-input" type="number" min="1"></label>
+                <label>BB<input id="set-bigBlind" class="form-input" type="number" min="2"></label>
+                <label>Turno ms<input id="set-turnTimeout" class="form-input" type="number" min="10000" step="1000"></label>
+                <label>Revive<input id="set-reviveStack" class="form-input" type="number" min="100"></label>
+                <label>Máx. cambio<input id="set-maxCardsChange" class="form-input" type="number" min="0" max="5"></label>
+              </div>
+              <label class="host-check"><input id="set-allowRevive" type="checkbox"> Revive activado</label>
+              <label class="host-check"><input id="set-requireReviveVote" type="checkbox"> Votación revive</label>
+              <label class="host-check"><input id="set-allowSpectators" type="checkbox"> Espectadores</label>
+              <label class="host-check"><input id="set-closeOnHostLeave" type="checkbox"> Cerrar si se va host</label>
+              <label class="host-check"><input id="set-showRivalStacksOnTable" type="checkbox"> Fichas rivales en mesa</label>
+              <label class="host-check"><input id="set-compactMode" type="checkbox"> Modo compacto</label>
+              <button class="btn btn-gold btn-block" onclick="saveHostSettings()">Guardar settings</button>
             </div>
           </div>
         </div>
@@ -886,6 +931,13 @@ input{outline:none;font-family:inherit}
     <div class="form-group">
       <label class="form-label">Contraseña (opcional)</label>
       <input class="form-input" id="cr-password" placeholder="Dejar vacío para sala pública" maxlength="20"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Modo de juego</label>
+      <select class="form-input" id="cr-gamemode">
+        <option value="texas">Texas Hold’em</option>
+        <option value="classic">Póker clásico / 5 cartas</option>
+      </select>
     </div>
     <div class="form-group">
       <label class="form-label">Máximo de jugadores</label>
@@ -996,7 +1048,15 @@ const state = {
   lastActionTime: 0,
   showdownActive: false,
   playerName: '',
+  pendingDirectRoom: null,
+  selectedExchangeCards: [],
+  audioReady: false,
+  audioCtx: null,
 };
+function setAppVh(){ document.documentElement.style.setProperty('--vh', (window.visualViewport?.height || window.innerHeight) * 0.01 + 'px'); }
+window.addEventListener('resize', setAppVh);
+window.visualViewport?.addEventListener('resize', setAppVh);
+setAppVh();
 
 // ============================================================ AVATARS
 const AVATARS = ['🦁','🐯','🦊','🐺','🐻','🐼','🦅','🦋','🐲','🦄','🐙','🦈','🎭','👑','🎩','🃏','💎','⚡','🔥','🌙'];
@@ -1047,6 +1107,14 @@ function savePlayerName() {
   state.playerName = name;
   document.getElementById('overlay-name-gate').classList.remove('active');
   updateCurrentNameUI();
+  if (state.pendingDirectRoom) {
+    state.joinTargetRoom = state.pendingDirectRoom;
+    state.pendingDirectRoom = null;
+    document.getElementById('jr-playername').value = state.playerName;
+    document.getElementById('jr-playername').readOnly = true;
+    document.getElementById('overlay-join').classList.add('active');
+    return;
+  }
   showScreen('screen-menu');
 }
 function updateCurrentNameUI() {
@@ -1094,10 +1162,11 @@ function createRoom() {
   const password = document.getElementById('cr-password').value.trim();
   const maxPlayers = parseInt(document.getElementById('cr-maxplayers').value) || 6;
   const startingStack = parseInt(document.getElementById('cr-stack').value) || 1000;
+  const gameMode = document.getElementById('cr-gamemode')?.value === 'classic' ? 'classic' : 'texas';
 
   localStorage.setItem('pokerName', playerName);
   closeOverlay('overlay-create');
-  socket.emit('createRoom', { playerName, roomName, password, maxPlayers, startingStack });
+  socket.emit('createRoom', { playerName, roomName, password, maxPlayers, startingStack, gameMode });
 }
 
 function joinPrivate() {
@@ -1121,7 +1190,12 @@ function renderRoomList(rooms) {
 
 function filterRooms() {
   const q = document.getElementById('lobby-search')?.value?.toLowerCase() || '';
-  const filtered = allRooms.filter(r => r.name.toLowerCase().includes(q) || r.id.includes(q));
+  const mode = document.getElementById('lobby-mode-filter')?.value || 'all';
+  const filtered = allRooms.filter(r => {
+    const matchesText = r.name.toLowerCase().includes(q) || r.id.includes(q);
+    const matchesMode = mode === 'all' || (r.gameMode || 'texas') === mode;
+    return matchesText && matchesMode;
+  });
   const grid = document.getElementById('rooms-grid');
   if (!grid) return;
 
@@ -1132,10 +1206,11 @@ function filterRooms() {
 
   grid.innerHTML = '';
   filtered.forEach(room => {
+    const mode = room.gameMode === 'classic' ? 'Clásico 5 cartas' : 'Texas Hold’em';
     const div = document.createElement('div');
     div.className = 'room-card';
     div.innerHTML = `
-      <div class="room-card-name">${escHtml(room.name)} ${room.hasPassword ? '🔒' : ''}</div>
+      <div class="room-card-name">${escHtml(room.name)} ${room.hasPassword ? '🔒' : ''}<span class="room-mode-pill ${room.gameMode==='classic'?'mode-classic':'mode-texas'}">${mode}</span></div>
       <div class="room-card-info">
         <span>👥 ${room.players}/${room.maxPlayers}</span>
         <span>💰 ${room.avgStack}</span>
@@ -1147,7 +1222,6 @@ function filterRooms() {
     grid.appendChild(div);
   });
 }
-
 function openJoinModal(roomId, hasPassword) {
   state.joinTargetRoom = roomId;
   document.getElementById('jr-playername').value = state.playerName || getStoredName();
@@ -1177,7 +1251,9 @@ function enterGame(roomId, isHost, isSpectator) {
   updateHideCardsButton();
 
   showScreen('screen-game');
-  document.getElementById('game-sidebar').classList.add('in-room');
+  const sidebar = document.getElementById('game-sidebar');
+  sidebar.classList.add('in-room');
+  sidebar.classList.remove('mobile-open');
 
   // Host UI
   document.getElementById('btn-host-panel').style.display = isHost ? 'inline-block' : 'none';
@@ -1198,7 +1274,7 @@ function renderGameState(gs) {
   document.getElementById('room-name-display').textContent = gs.roomName;
   document.getElementById('hand-badge').textContent = gs.gameState ? `Mano #${gs.gameState.handNumber}` : 'Sala';
 
-  const phaseNames = { waiting:'Esperando', preflop:'Pre-Flop', flop:'Flop', turn:'Turn', river:'River', showdown:'Showdown' };
+  const phaseNames = { waiting:'Esperando', preflop:'Pre-Flop', flop:'Flop', turn:'Turn', river:'River', exchange:'Cambio de cartas', postexchange:'Apuestas finales', showdown:'Showdown' };
   const phase = gs.gameState?.phase || 'waiting';
   document.getElementById('phase-text').textContent = phaseNames[phase] || phase;
 
@@ -1242,6 +1318,7 @@ function renderGameState(gs) {
   // Host UI
   state.isHost = gs.players.find(p=>p.id===gs.myId)?.isHost || gs.hostId === gs.myId;
   document.getElementById('btn-host-panel').style.display = state.isHost ? 'inline-block' : 'none';
+  const hb=document.getElementById('tab-host-btn'); if(hb) hb.style.display = state.isHost ? 'block' : 'none';
 
   // Spectator
   document.getElementById('spectator-banner').style.display = gs.isSpectator ? 'block' : 'none';
@@ -1272,6 +1349,7 @@ function renderTable(gs) {
   // Community cards
   const cc = gs.gameState?.communityCards || [];
   const ccEl = document.getElementById('community-cards');
+  document.getElementById('community-area')?.classList.toggle('classic-mode', gs.gameMode === 'classic');
   ccEl.innerHTML = '';
   cc.forEach((c, i) => {
     const el = buildCard(c, true, i * 100);
@@ -1353,6 +1431,11 @@ function renderSeats(gs) {
           const cardEl = buildCard(c, false, ci*90);
           cardEl.style.width = '42px';
           cardEl.style.height = '58px';
+          if (isMe && gs.gameMode === 'classic' && gs.gameState?.phase === 'exchange' && gs.gameState?.exchangePlayerIndex === originalIndex) {
+            cardEl.classList.add('exchange-card');
+            if (state.selectedExchangeCards.includes(ci)) cardEl.classList.add('exchange-selected');
+            cardEl.setAttribute('onclick', `toggleExchangeCard(${ci})`);
+          }
           cardsHtml += cardEl.outerHTML;
         }
       });
@@ -1379,8 +1462,9 @@ function renderSeats(gs) {
       ${blindBadge}
       ${hostCrown}
       <div class="seat-name">${escHtml(player.name)}${isMe?' (Tú)':''}</div>
-      <div class="seat-stack">${renderChipStack(player.stack)} ${formatChips(player.stack)}</div>
+      <div class="seat-stack ${(!isMe && !gs.settings?.showRivalStacksOnTable) ? 'rival-hidden' : ''}">${renderChipStack(player.stack)} ${formatChips(player.stack)}</div>
       ${player.bet > 0 ? `<div class="seat-bet">Apuesta: ${formatChips(player.bet)}</div>` : ''}
+      ${player.status && player.status !== 'active' ? `<div class="seat-status">${statusLabel(player)}</div>` : ''}
       ${player.allIn ? '<div style="font-size:0.65rem;color:#af7ac5;font-weight:700">ALL IN</div>' : ''}
     `;
 
@@ -1391,15 +1475,40 @@ function renderSeats(gs) {
 function renderMyActions(gs) {
   const hud = document.getElementById('actions-hud');
   const myP = gs.players.find(p=>p.id===gs.myId);
-  if (!myP || myP.eliminated || gs.isSpectator) { hud.classList.add('hidden'); return; }
+  const controls = document.getElementById('my-hand-controls');
+  const stackPill = document.getElementById('my-stack-pill');
+  const exchangePanel = document.getElementById('exchange-panel');
+  const myHandInfo = document.getElementById('my-hand-info');
+  myHandInfo.style.display = 'none';
+
+  if (myP && !gs.isSpectator && myP.cards?.length) {
+    controls.style.display = 'flex';
+    stackPill.textContent = `💰 ${formatChips(myP.stack)} fichas`;
+  } else {
+    controls.style.display = 'none';
+  }
+
+  if (!myP || myP.eliminated || gs.isSpectator) { hud.classList.add('hidden'); exchangePanel.style.display='none'; return; }
 
   const gstate = gs.gameState;
   if (!gstate || gstate.phase === 'showdown' || gstate.phase === 'waiting') {
-    hud.classList.add('hidden'); return;
+    hud.classList.add('hidden'); exchangePanel.style.display='none'; return;
   }
 
   const myIdx = gs.players.indexOf(myP);
   const isMyTurn = gstate.currentPlayerIndex === myIdx && !myP.folded && !myP.allIn;
+  const isMyExchange = gs.gameMode === 'classic' && gstate.phase === 'exchange' && gstate.exchangePlayerIndex === myIdx && !myP.hasExchanged;
+
+  if (isMyExchange) {
+    hud.classList.add('hidden');
+    exchangePanel.style.display = 'block';
+    const max = gs.settings?.maxCardsChange ?? 3;
+    document.getElementById('exchange-counter').textContent = `Seleccionadas: ${state.selectedExchangeCards.length}/${max}`;
+    return;
+  } else {
+    exchangePanel.style.display = 'none';
+    if (gstate.phase === 'exchange') { hud.classList.add('hidden'); return; }
+  }
 
   if (!isMyTurn) { hud.classList.add('hidden'); return; }
   hud.classList.remove('hidden');
@@ -1409,31 +1518,13 @@ function renderMyActions(gs) {
 
   document.getElementById('btn-check').style.display = canCheck ? 'block' : 'none';
   document.getElementById('btn-call').style.display = !canCheck && callAmount > 0 ? 'block' : 'none';
-  if (!canCheck) {
-    document.getElementById('btn-call').textContent = `Call ${formatChips(Math.min(callAmount, myP.stack))}`;
-  }
-
+  if (!canCheck) document.getElementById('btn-call').textContent = `Call ${formatChips(Math.min(callAmount, myP.stack))}`;
   document.getElementById('btn-raise').style.display = myP.stack > callAmount ? 'block' : 'none';
 
-  // Set default raise
   const minRaise = gstate.minRaise || gstate.bigBlind;
   const defaultRaise = Math.max(minRaise, gstate.bigBlind);
-  if (!document.getElementById('raise-input').dataset.touched) {
-    document.getElementById('raise-input').value = defaultRaise;
-  }
-
-  // My hand name if 2 cards
-  const myHandInfo = document.getElementById('my-hand-info');
-  if (myP.cards.length === 2 && myP.cards[0] !== 'back') {
-    myHandInfo.style.display = 'block';
-    // Basic hand strength hint
-    const cards = myP.cards;
-    myHandInfo.textContent = `Tus cartas: ${cards.map(formatCardName).join(' ')}`;
-  } else {
-    myHandInfo.style.display = 'none';
-  }
+  if (!document.getElementById('raise-input').dataset.touched) document.getElementById('raise-input').value = defaultRaise;
 }
-
 function renderReviveRequest(gs) {
   const banner = document.getElementById('revive-request-banner');
   const revReq = gs.gameState?.reviveRequest;
@@ -1448,7 +1539,7 @@ function renderReviveRequest(gs) {
   banner.style.display = 'block';
   document.getElementById('revive-requester-name').textContent = `${revReq.playerName} quiere revivir`;
 
-  const active = gs.players.filter(p=>!p.eliminated&&!p.disconnected);
+  const active = gs.players.filter(p=>!p.eliminated&&!p.disconnected&&p.stack>0);
   const yeses = active.filter(p=>revReq.votes[p.id]===true).length;
   const nos = active.filter(p=>revReq.votes[p.id]===false).length;
   document.getElementById('revive-vote-count').textContent = `✅ ${yeses}  ❌ ${nos}`;
@@ -1470,7 +1561,7 @@ function renderPlayersList(gs) {
 
     const badges = [];
     if (p.isHost) badges.push('<span class="player-list-badge badge-host">👑 Host</span>');
-    if (p.eliminated) badges.push('<span class="player-list-badge badge-eliminated">💀 Eliminado</span>');
+    if (p.eliminated || p.status === 'busted') badges.push('<span class="player-list-badge badge-eliminated">💀 Sin fichas</span>');
     if (p.disconnected) badges.push('<span class="player-list-badge badge-disconnected">📡 Desconectado</span>');
     if (p.allIn) badges.push('<span class="player-list-badge badge-allin">💥 All-In</span>');
     if (p.folded && !p.eliminated) badges.push('<span class="player-list-badge badge-folded">Fold</span>');
@@ -1509,6 +1600,71 @@ function renderHostPanel(gs) {
 
   const startBtn = document.getElementById('hbtn-start');
   if (startBtn) startBtn.style.display = gs.state === 'waiting' ? 'block' : 'none';
+  fillHostSettings(gs.settings || {});
+}
+
+
+function statusLabel(p){
+  if (p.disconnected) return 'Desconectado';
+  if (p.eliminated || p.status === 'busted') return 'Sin fichas';
+  if (p.waitingNextHand || p.status === 'revivedNextHand') return 'Próxima mano';
+  if (p.folded) return 'Fold';
+  if (p.allIn) return 'All-in';
+  return 'Activo';
+}
+function toggleExchangeCard(idx){
+  const gs = state.gameState;
+  const max = gs?.settings?.maxCardsChange ?? 3;
+  const i = state.selectedExchangeCards.indexOf(idx);
+  if (i >= 0) state.selectedExchangeCards.splice(i,1);
+  else {
+    if (state.selectedExchangeCards.length >= max) return showNotif(`Máximo ${max} cartas.`, 'warning');
+    state.selectedExchangeCards.push(idx);
+  }
+  renderGameState(state.gameState);
+}
+function confirmExchange(){
+  socket.emit('exchangeCards', { indices: state.selectedExchangeCards.slice() });
+  state.selectedExchangeCards = [];
+  document.getElementById('exchange-panel').style.display='none';
+}
+function skipExchange(){ state.selectedExchangeCards = []; socket.emit('exchangeCards', { indices: [] }); document.getElementById('exchange-panel').style.display='none'; }
+function toggleSidebar(force){
+  const side = document.getElementById('game-sidebar');
+  const open = force === undefined ? !side.classList.contains('mobile-open') : !!force;
+  side.classList.toggle('mobile-open', open);
+  document.body.classList.toggle('sidebar-hidden', !open && window.innerWidth > 768);
+}
+function copyRoomLink(){
+  if (!state.roomId) return;
+  const url = `${location.origin}${location.pathname}?room=${state.roomId}`;
+  const text = `Unite a mi mesa de Royal Poker: ${url}`;
+  if (navigator.share && /Mobi|Android|iPhone/i.test(navigator.userAgent)) navigator.share({ title:'Royal Poker', text, url }).catch(()=>{});
+  navigator.clipboard?.writeText(text).then(()=>showNotif('Link copiado', 'success')).catch(()=>showNotif(url, 'info'));
+}
+function fillHostSettings(settings){
+  const map = ['smallBlind','bigBlind','turnTimeout','reviveStack','maxCardsChange'];
+  map.forEach(k=>{ const el=document.getElementById('set-'+k); if(el && document.activeElement!==el) el.value=settings[k]??''; });
+  const chat=document.getElementById('set-chatMode'); if(chat) chat.value=settings.chatMode||'full';
+  ['allowRevive','requireReviveVote','allowSpectators','closeOnHostLeave','showRivalStacksOnTable','compactMode'].forEach(k=>{ const el=document.getElementById('set-'+k); if(el) el.checked=!!settings[k]; });
+}
+function saveHostSettings(){
+  const data = {
+    chatMode: document.getElementById('set-chatMode').value,
+    smallBlind: parseInt(document.getElementById('set-smallBlind').value),
+    bigBlind: parseInt(document.getElementById('set-bigBlind').value),
+    turnTimeout: parseInt(document.getElementById('set-turnTimeout').value),
+    reviveStack: parseInt(document.getElementById('set-reviveStack').value),
+    maxCardsChange: parseInt(document.getElementById('set-maxCardsChange').value),
+    allowRevive: document.getElementById('set-allowRevive').checked,
+    requireReviveVote: document.getElementById('set-requireReviveVote').checked,
+    allowSpectators: document.getElementById('set-allowSpectators').checked,
+    closeOnHostLeave: document.getElementById('set-closeOnHostLeave').checked,
+    showRivalStacksOnTable: document.getElementById('set-showRivalStacksOnTable').checked,
+    compactMode: document.getElementById('set-compactMode').checked
+  };
+  socket.emit('updateSettings', data);
+  showNotif('Settings enviados', 'success');
 }
 
 // ============================================================ CARDS
@@ -1624,7 +1780,9 @@ function startGame() {
 // ============================================================ HOST ACTIONS
 function toggleHostPanel() {
   if (!state.isHost) return;
-  document.getElementById('game-sidebar').classList.add('in-room');
+  const sidebar = document.getElementById('game-sidebar');
+  sidebar.classList.add('in-room');
+  sidebar.classList.remove('mobile-open');
   switchTab('host');
 }
 
@@ -1881,6 +2039,7 @@ socket.on('roomJoined', (data) => {
 
 socket.on('gameState', (gs) => {
   if (!state.roomId || (gs.roomId && gs.roomId !== state.roomId)) return;
+  if (gs.gameState?.phase !== 'exchange') state.selectedExchangeCards = [];
   renderGameState(gs);
 });
 
@@ -1944,6 +2103,12 @@ socket.on('error', (data) => {
 
 // ============================================================ INIT
 createStars();
+const directRoom = new URLSearchParams(location.search).get('room');
+if (directRoom) {
+  state.pendingDirectRoom = directRoom;
+  state.joinTargetRoom = directRoom;
+  setTimeout(()=>{ if (requirePlayerName()) { document.getElementById('jr-playername').value = state.playerName; document.getElementById('jr-playername').readOnly = true; document.getElementById('overlay-join').classList.add('active'); } }, 400);
+}
 
 // Auto-refresh room list
 setInterval(() => {
