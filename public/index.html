@@ -741,6 +741,103 @@ body.compact-mode #table-wrap{transform:scale(.94);transform-origin:center cente
   #my-hand-controls{bottom:72px}
 }
 
+
+
+/* ---- CHAT PANEL FIX 3: panel legible, vertical, no tapa botones ---- */
+#top-bar{z-index:220!important;pointer-events:auto!important}
+#actions-hud{z-index:210!important;pointer-events:auto!important}
+#game-sidebar{
+  position:fixed!important;
+  top:58px!important;
+  right:14px!important;
+  bottom:auto!important;
+  width:min(640px, calc(100vw - 40px))!important;
+  height:min(60vh, 540px)!important;
+  min-height:360px!important;
+  display:none;
+  flex-direction:row!important;
+  background:rgba(4,12,8,.72)!important;
+  border:1px solid rgba(201,168,76,.36)!important;
+  border-radius:16px!important;
+  z-index:90!important;
+  overflow:hidden!important;
+  backdrop-filter:blur(12px)!important;
+  box-shadow:0 18px 70px rgba(0,0,0,.62)!important;
+}
+#game-sidebar.in-room{display:flex!important}
+#game-sidebar:not(.mobile-open).in-room{opacity:.96!important}
+#sidebar-tabs{
+  width:128px!important;
+  flex:0 0 128px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  background:rgba(0,0,0,.36)!important;
+  border-right:1px solid rgba(201,168,76,.24)!important;
+  border-bottom:0!important;
+}
+.sidebar-tab{
+  height:92px!important;
+  flex:0 0 auto!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  padding:0 14px!important;
+  font-size:.9rem!important;
+  font-weight:900!important;
+  color:var(--text2)!important;
+  border-bottom:1px solid rgba(255,255,255,.07)!important;
+}
+.sidebar-tab.active{color:var(--gold2)!important;background:rgba(201,168,76,.08)!important;border-left:3px solid var(--gold)!important}
+.sidebar-close{height:48px!important;margin-top:auto!important;margin-left:0!important;width:100%!important;border-top:1px solid rgba(255,255,255,.1)!important;background:rgba(255,255,255,.08)!important;color:var(--text)!important;font-size:1.2rem!important}
+.sidebar-content{flex:1!important;min-width:0!important;height:100%!important;display:flex!important;flex-direction:column!important;background:rgba(0,0,0,.12)!important;padding:12px!important}
+#tab-chat,#tab-players,#tab-host{width:100%!important;height:100%!important;min-width:0!important;min-height:0!important}
+#tab-chat{display:flex;flex-direction:column!important;gap:10px!important}
+#chat-messages{
+  flex:1!important;
+  min-height:0!important;
+  overflow-y:auto!important;
+  padding:12px!important;
+  background:rgba(0,0,0,.34)!important;
+  border:1px solid rgba(201,168,76,.2)!important;
+  border-radius:12px!important;
+}
+.chat-msg{font-size:.95rem!important;line-height:1.35!important;max-width:100%!important;word-break:break-word!important}
+#chat-input-row{
+  flex:0 0 auto!important;
+  display:flex!important;
+  gap:8px!important;
+  padding:10px!important;
+  background:rgba(0,0,0,.4)!important;
+  border:1px solid rgba(201,168,76,.22)!important;
+  border-radius:12px!important;
+}
+#chat-input{min-width:0!important;font-size:.95rem!important;height:38px!important}
+#chat-send{height:38px!important;min-width:46px!important;font-weight:900!important}
+#tab-players,#tab-host{overflow:auto!important;padding:4px!important}
+@media(min-width:1400px){
+  #game-sidebar{width:min(680px, calc(100vw - 60px))!important;height:min(58vh,560px)!important}
+}
+@media(max-width:768px){
+  #game-sidebar.in-room{display:none!important}
+  #game-sidebar.mobile-open{
+    display:flex!important;
+    top:58px!important;
+    right:8px!important;
+    width:min(94vw, 520px)!important;
+    height:min(62vh, 520px)!important;
+    min-height:340px!important;
+  }
+  #sidebar-tabs{width:104px!important;flex-basis:104px!important}
+  .sidebar-tab{height:82px!important;font-size:.78rem!important;padding:0 10px!important}
+  #chat-messages{padding:10px!important}
+  .chat-msg{font-size:.88rem!important}
+}
+@media(max-width:480px){
+  #game-sidebar.mobile-open{width:96vw!important;right:2vw!important;height:min(64vh,500px)!important}
+  #sidebar-tabs{width:88px!important;flex-basis:88px!important}
+  .sidebar-tab{height:76px!important;font-size:.72rem!important;padding:0 8px!important}
+}
+
 </style>
 </head>
 <body>
@@ -801,7 +898,7 @@ body.compact-mode #table-wrap{transform:scale(.94);transform-origin:center cente
           <button class="top-btn top-btn-eye" id="btn-copy-link" onclick="copyRoomLink()">🔗 Link</button>
           <button class="top-btn top-btn-eye" id="btn-open-sidebar" onclick="toggleSidebar()">💬 Panel</button>
           <button class="top-btn top-btn-eye" id="btn-audio" onclick="toggleAudioPopover()">🔇 Audio</button>
-          <button class="top-btn top-btn-host" id="btn-host-panel" onclick="toggleHostPanel()" style="display:none">👑 Admin</button>
+          <button class="top-btn top-btn-host" id="btn-host-panel" onclick="toggleHostPanel()" style="display:none">⚙️ Avanzadas</button>
           <button class="top-btn top-btn-leave" onclick="confirmLeave()">🚪 Salir</button>
         </div>
       </div>
@@ -917,6 +1014,11 @@ body.compact-mode #table-wrap{transform:scale(.94);transform-origin:center cente
         <!-- Chat -->
         <div id="tab-chat">
           <div id="chat-messages"></div>
+          <div id="chat-input-row">
+            <span id="chat-disabled-note">🔕 Chat escrito desactivado. Solo se muestran alertas del sistema.</span>
+            <input id="chat-input" placeholder="Mensaje..." maxlength="200" onkeydown="if(event.key==='Enter')sendChat()"/>
+            <button id="chat-send" onclick="sendChat()">➤</button>
+          </div>
         </div>
         <!-- Players -->
         <div id="tab-players" style="display:none">
@@ -953,11 +1055,6 @@ body.compact-mode #table-wrap{transform:scale(.94);transform-origin:center cente
             </div>
           </div>
         </div>
-      </div>
-      <div id="chat-input-row">
-        <span id="chat-disabled-note">🔕 Chat escrito desactivado. Solo se muestran alertas del sistema.</span>
-        <input id="chat-input" placeholder="Mensaje..." maxlength="200" onkeydown="if(event.key==='Enter')sendChat()"/>
-        <button id="chat-send" onclick="sendChat()">➤</button>
       </div>
     </div>
   </div>
@@ -1873,8 +1970,14 @@ function startGame() {
 function toggleHostPanel() {
   if (!state.isHost) return;
   const sidebar = document.getElementById('game-sidebar');
+  if (!sidebar) return;
   sidebar.classList.add('in-room');
-  sidebar.classList.remove('mobile-open');
+  document.body.classList.remove('sidebar-hidden');
+  if (window.innerWidth <= 768) {
+    sidebar.classList.add('mobile-open');
+  } else {
+    sidebar.classList.remove('mobile-open');
+  }
   switchTab('host');
 }
 
