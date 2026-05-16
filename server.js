@@ -1347,6 +1347,9 @@ io.on('connection', (socket) => {
 
       const roomId = crypto.randomBytes(4).toString('hex');
       const room = createRoom(roomId, name, socket.id, playerName, password, maxPlayers, startingStack, gameMode);
+      if (data.settings && typeof data.settings === 'object') {
+        updateSettings(room, socket.id, data.settings);
+      }
       const player = createPlayer(socket.id, playerName, room.startingStack);
       player.seatIndex = 0;
       room.players.push(player);
