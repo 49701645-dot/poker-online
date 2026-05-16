@@ -838,6 +838,25 @@ body.compact-mode #table-wrap{transform:scale(.94);transform-origin:center cente
   .sidebar-tab{height:76px!important;font-size:.72rem!important;padding:0 8px!important}
 }
 
+/* ---- FIX: panel cerrable + avanzadas al crear sala ---- */
+body.sidebar-hidden #game-sidebar.in-room,
+body.sidebar-hidden #game-sidebar.mobile-open{display:none!important;opacity:0!important;pointer-events:none!important}
+#create-advanced-box{margin:18px 0 14px;border:1px solid rgba(201,168,76,.28);border-radius:14px;background:rgba(0,0,0,.22);overflow:hidden}
+#create-advanced-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;padding:13px 15px;background:rgba(201,168,76,.08);color:var(--gold2);font-weight:900;letter-spacing:.04em}
+#create-advanced-content{display:none;padding:14px}
+#create-advanced-box.open #create-advanced-content{display:block}
+.create-adv-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.create-adv-check{display:flex;align-items:center;gap:8px;color:var(--text2);font-size:.88rem;margin:9px 0}
+.create-adv-check input{accent-color:var(--gold)}
+.create-adv-help{font-size:.78rem;color:var(--text3);line-height:1.25;margin:4px 0 10px}
+@media(max-width:520px){.create-adv-grid{grid-template-columns:1fr}#create-advanced-content{padding:12px}}
+
+/* ---- REAL MUSIC CONTROLS ---- */
+.menu-audio-panel{width:min(340px,90vw);margin-top:10px;padding:12px 14px;border:1px solid rgba(201,168,76,.25);border-radius:14px;background:rgba(0,0,0,.28);backdrop-filter:blur(10px);box-shadow:0 10px 35px rgba(0,0,0,.28)}
+.menu-audio-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;color:var(--gold2);font-weight:900;font-size:.9rem}.menu-audio-head button{padding:7px 12px;border-radius:10px;background:rgba(201,168,76,.12);color:var(--gold2);border:1px solid rgba(201,168,76,.25);font-weight:800}
+.menu-audio-row{display:flex;align-items:center;gap:8px;margin:7px 0;color:var(--text2);font-size:.82rem}.menu-audio-row input[type="range"]{flex:1;accent-color:#c9a84c}.menu-audio-row input[type="checkbox"]{accent-color:#c9a84c}
+.audio-note{color:var(--text3);font-size:.72rem;line-height:1.2;margin-top:6px}
+
 </style>
 </head>
 <body>
@@ -866,6 +885,14 @@ body.compact-mode #table-wrap{transform:scale(.94);transform-origin:center cente
     <button class="menu-btn menu-btn-secondary" onclick="showJoinPrivate()">🔒 Unirse con Código</button>
     <button class="menu-btn menu-btn-secondary" onclick="openNameGate(true)">✏️ Cambiar Nombre</button>
     <div class="current-name-pill" id="current-name-pill"></div>
+    <div class="menu-audio-panel">
+      <div class="menu-audio-head"><span>🎵 Música del juego</span><button id="menu-audio-toggle" onclick="toggleAudioEnabled()">Activar</button></div>
+      <label class="menu-audio-row"><input type="checkbox" id="menu-audio-music" onchange="saveAudioPrefs(); syncAudio()"> Música</label>
+      <label class="menu-audio-row"><input type="checkbox" id="menu-audio-effects" onchange="saveAudioPrefs()"> Efectos</label>
+      <label class="menu-audio-row">Música <input type="range" id="menu-audio-music-volume" min="0" max="100" value="18" oninput="saveAudioPrefs(); syncAudio()"></label>
+      <label class="menu-audio-row">Efectos <input type="range" id="menu-audio-effects-volume" min="0" max="100" value="35" oninput="saveAudioPrefs()"></label>
+      <div class="audio-note">La música arranca cuando tocás Activar y sigue también desde el menú.</div>
+    </div>
   </div>
 </div>
 
@@ -1116,6 +1143,64 @@ body.compact-mode #table-wrap{transform:scale(.94);transform-origin:center cente
       <label class="form-label">Stack inicial</label>
       <input class="form-input" id="cr-stack" type="number" min="100" value="1000" step="100"/>
     </div>
+
+    <div id="create-advanced-box">
+      <button type="button" id="create-advanced-toggle" onclick="toggleCreateAdvanced()">
+        <span>⚙️ Personalización avanzada</span><span id="create-advanced-arrow">▼</span>
+      </button>
+      <div id="create-advanced-content">
+        <div class="form-group">
+          <label class="form-label">Chat de la sala</label>
+          <select class="form-input" id="cr-chatMode">
+            <option value="full" selected>Chat completo</option>
+            <option value="alerts">Solo alertas importantes</option>
+            <option value="disabled">Chat desactivado</option>
+          </select>
+          <div class="create-adv-help">Aunque bloquees el chat escrito, las alertas importantes del juego siguen apareciendo.</div>
+        </div>
+        <div class="create-adv-grid">
+          <div class="form-group">
+            <label class="form-label">Small blind</label>
+            <input class="form-input" id="cr-smallBlind" type="number" min="1" value="100" step="10"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Big blind</label>
+            <input class="form-input" id="cr-bigBlind" type="number" min="2" value="200" step="10"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tiempo por turno</label>
+            <select class="form-input" id="cr-turnTimeout">
+              <option value="15000">15 segundos</option>
+              <option value="30000" selected>30 segundos</option>
+              <option value="45000">45 segundos</option>
+              <option value="60000">60 segundos</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Fichas al revivir</label>
+            <input class="form-input" id="cr-reviveStack" type="number" min="100" value="500" step="100"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Máx. cartas a cambiar</label>
+            <select class="form-input" id="cr-maxCardsChange">
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3" selected>3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </div>
+        </div>
+        <label class="create-adv-check"><input id="cr-allowRevive" type="checkbox" checked> Permitir revivir jugadores sin fichas</label>
+        <label class="create-adv-check"><input id="cr-requireReviveVote" type="checkbox" checked> Requerir votación para revivir</label>
+        <label class="create-adv-check"><input id="cr-allowSpectators" type="checkbox" checked> Permitir espectadores</label>
+        <label class="create-adv-check"><input id="cr-closeOnHostLeave" type="checkbox"> Cerrar sala si se va el host</label>
+        <label class="create-adv-check"><input id="cr-showRivalStacksOnTable" type="checkbox"> Mostrar fichas rivales en la mesa</label>
+        <label class="create-adv-check"><input id="cr-compactMode" type="checkbox"> Modo compacto</label>
+      </div>
+    </div>
+
     <button class="btn btn-gold btn-block" onclick="createRoom()">Crear Sala</button>
     <button class="btn btn-ghost btn-block" onclick="closeOverlay('overlay-create')">Cancelar</button>
   </div>
@@ -1214,8 +1299,10 @@ const state = {
   selectedExchangeCards: [],
   audioReady: false,
   audioCtx: null,
-  audioMusicGain: null,
-  audioOscillators: [],
+  audioPlayers: [],
+  activeAudioIndex: 0,
+  musicCrossfadeTimer: null,
+  musicRaf: null,
   audio: { enabled:false, music:true, effects:true, musicVolume:18, effectsVolume:35 }
 };
 function setAppVh(){ document.documentElement.style.setProperty('--vh', (window.visualViewport?.height || window.innerHeight) * 0.01 + 'px'); }
@@ -1321,6 +1408,31 @@ function closeOverlay(id) {
 }
 
 // ============================================================ ROOM CREATION
+function toggleCreateAdvanced(){
+  const box = document.getElementById('create-advanced-box');
+  const arrow = document.getElementById('create-advanced-arrow');
+  if (!box) return;
+  box.classList.toggle('open');
+  if (arrow) arrow.textContent = box.classList.contains('open') ? '▲' : '▼';
+}
+function getCreateSettings(){
+  const val = (id, fallback) => { const el=document.getElementById(id); return el ? el.value : fallback; };
+  const checked = (id, fallback=false) => { const el=document.getElementById(id); return el ? !!el.checked : fallback; };
+  return {
+    chatMode: val('cr-chatMode','full'),
+    smallBlind: parseInt(val('cr-smallBlind',100)) || 100,
+    bigBlind: parseInt(val('cr-bigBlind',200)) || 200,
+    turnTimeout: parseInt(val('cr-turnTimeout',30000)) || 30000,
+    reviveStack: parseInt(val('cr-reviveStack',500)) || 500,
+    maxCardsChange: parseInt(val('cr-maxCardsChange',3)),
+    allowRevive: checked('cr-allowRevive', true),
+    requireReviveVote: checked('cr-requireReviveVote', true),
+    allowSpectators: checked('cr-allowSpectators', true),
+    closeOnHostLeave: checked('cr-closeOnHostLeave', false),
+    showRivalStacksOnTable: checked('cr-showRivalStacksOnTable', false),
+    compactMode: checked('cr-compactMode', false)
+  };
+}
 function createRoom() {
   if (!requirePlayerName()) return;
   const playerName = state.playerName;
@@ -1329,10 +1441,11 @@ function createRoom() {
   const maxPlayers = parseInt(document.getElementById('cr-maxplayers').value) || 6;
   const startingStack = parseInt(document.getElementById('cr-stack').value) || 1000;
   const gameMode = document.getElementById('cr-gamemode')?.value === 'classic' ? 'classic' : 'texas';
+  const settings = getCreateSettings();
 
   localStorage.setItem('pokerName', playerName);
   closeOverlay('overlay-create');
-  socket.emit('createRoom', { playerName, roomName, password, maxPlayers, startingStack, gameMode });
+  socket.emit('createRoom', { playerName, roomName, password, maxPlayers, startingStack, gameMode, settings });
 }
 
 function joinPrivate() {
@@ -1803,11 +1916,15 @@ function skipExchange(){ state.selectedExchangeCards = []; socket.emit('exchange
 function toggleSidebar(force){
   const side = document.getElementById('game-sidebar');
   if (!side) return;
-  const isMobile = window.innerWidth <= 768;
-  const currentlyOpen = isMobile ? side.classList.contains('mobile-open') : !document.body.classList.contains('sidebar-hidden');
-  const open = force === undefined ? !currentlyOpen : !!force;
-  side.classList.toggle('mobile-open', open && isMobile);
-  document.body.classList.toggle('sidebar-hidden', !open && !isMobile);
+  const open = force === undefined ? (document.body.classList.contains('sidebar-hidden') || !side.classList.contains('mobile-open') && window.innerWidth <= 768) : !!force;
+  if (open) {
+    side.classList.add('in-room');
+    document.body.classList.remove('sidebar-hidden');
+    if (window.innerWidth <= 768) side.classList.add('mobile-open');
+  } else {
+    side.classList.remove('mobile-open');
+    document.body.classList.add('sidebar-hidden');
+  }
 }
 function copyRoomLink(){
   if (!state.roomId) return;
@@ -2193,65 +2310,146 @@ function applyCompactMode(settings) {
 }
 
 // ============================================================ AUDIO
+const MUSIC_SRC = 'audio/poker-ambient.mp3';
+const MUSIC_CROSSFADE_SECONDS = 8;
+
+function audioControls(){
+  return [
+    {m:document.getElementById('audio-music'), fx:document.getElementById('audio-effects'), mv:document.getElementById('audio-music-volume'), fv:document.getElementById('audio-effects-volume'), t:document.getElementById('audio-toggle')},
+    {m:document.getElementById('menu-audio-music'), fx:document.getElementById('menu-audio-effects'), mv:document.getElementById('menu-audio-music-volume'), fv:document.getElementById('menu-audio-effects-volume'), t:document.getElementById('menu-audio-toggle')}
+  ];
+}
 function loadAudioPrefs(){
   try {
     const raw = localStorage.getItem('royalPokerAudio');
     if (raw) state.audio = { ...state.audio, ...JSON.parse(raw) };
   } catch(e) {}
-  const m=document.getElementById('audio-music'), fx=document.getElementById('audio-effects');
-  const mv=document.getElementById('audio-music-volume'), fv=document.getElementById('audio-effects-volume');
-  if(m) m.checked=!!state.audio.music; if(fx) fx.checked=!!state.audio.effects;
-  if(mv) mv.value=state.audio.musicVolume; if(fv) fv.value=state.audio.effectsVolume;
+  syncAudioControls();
   updateAudioButton();
 }
+function syncAudioControls(){
+  for (const c of audioControls()) {
+    if(c.m) c.m.checked=!!state.audio.music;
+    if(c.fx) c.fx.checked=!!state.audio.effects;
+    if(c.mv) c.mv.value=state.audio.musicVolume;
+    if(c.fv) c.fv.value=state.audio.effectsVolume;
+  }
+}
+function readAudioControls(){
+  const controls = audioControls();
+  const active = document.activeElement;
+  const source = controls.find(c => [c.m,c.fx,c.mv,c.fv].includes(active)) || controls.find(c => c.m || c.fx || c.mv || c.fv) || {};
+  if(source.m) state.audio.music=source.m.checked;
+  if(source.fx) state.audio.effects=source.fx.checked;
+  if(source.mv) state.audio.musicVolume=parseInt(source.mv.value)||0;
+  if(source.fv) state.audio.effectsVolume=parseInt(source.fv.value)||0;
+}
 function saveAudioPrefs(){
-  const m=document.getElementById('audio-music'), fx=document.getElementById('audio-effects');
-  const mv=document.getElementById('audio-music-volume'), fv=document.getElementById('audio-effects-volume');
-  if(m) state.audio.music=m.checked; if(fx) state.audio.effects=fx.checked;
-  if(mv) state.audio.musicVolume=parseInt(mv.value)||0; if(fv) state.audio.effectsVolume=parseInt(fv.value)||0;
+  readAudioControls();
   localStorage.setItem('royalPokerAudio', JSON.stringify(state.audio));
+  syncAudioControls();
   updateAudioButton();
 }
 function toggleAudioPopover(){ document.getElementById('audio-popover')?.classList.toggle('active'); }
 function toggleAudioEnabled(){
   state.audio.enabled = !state.audio.enabled;
   localStorage.setItem('royalPokerAudio', JSON.stringify(state.audio));
-  if (state.audio.enabled) initAudio();
-  syncAudio(); updateAudioButton();
+  syncAudioControls();
+  syncAudio();
+  updateAudioButton();
 }
 function updateAudioButton(){
-  const btn=document.getElementById('btn-audio'), t=document.getElementById('audio-toggle');
+  const btn=document.getElementById('btn-audio');
   if(btn) btn.textContent = state.audio.enabled ? '🔊 Audio' : '🔇 Audio';
-  if(t) t.textContent = state.audio.enabled ? 'Desactivar audio' : 'Activar audio';
+  for (const c of audioControls()) if(c.t) c.t.textContent = state.audio.enabled ? 'Desactivar' : 'Activar';
+}
+function musicTargetVolume(){ return Math.max(0, Math.min(1, (state.audio.musicVolume||0)/100)); }
+function initMusicPlayers(){
+  if (state.audioPlayers.length) return;
+  state.audioPlayers = [new Audio(MUSIC_SRC), new Audio(MUSIC_SRC)];
+  for (const a of state.audioPlayers) {
+    a.preload = 'auto';
+    a.loop = false;
+    a.volume = 0;
+    a.addEventListener('error', () => console.warn('No se pudo cargar la música:', MUSIC_SRC));
+  }
+}
+function stopMusic(){
+  if (state.musicCrossfadeTimer) clearTimeout(state.musicCrossfadeTimer);
+  if (state.musicRaf) cancelAnimationFrame(state.musicRaf);
+  state.musicCrossfadeTimer = null;
+  state.musicRaf = null;
+  for (const a of state.audioPlayers) {
+    a.pause();
+    try { a.currentTime = 0; } catch(e) {}
+    a.volume = 0;
+  }
+}
+async function startMusic(){
+  initMusicPlayers();
+  const a = state.audioPlayers[state.activeAudioIndex] || state.audioPlayers[0];
+  const vol = musicTargetVolume();
+  a.volume = vol;
+  if (a.paused) {
+    try { await a.play(); } catch(e) { return; }
+  }
+  scheduleMusicCrossfade();
+}
+function scheduleMusicCrossfade(){
+  if (state.musicCrossfadeTimer) clearTimeout(state.musicCrossfadeTimer);
+  const a = state.audioPlayers[state.activeAudioIndex];
+  if (!a) return;
+  const schedule = () => {
+    const dur = Number.isFinite(a.duration) ? a.duration : 0;
+    const delay = Math.max(5, dur - MUSIC_CROSSFADE_SECONDS - 0.25) * 1000;
+    state.musicCrossfadeTimer = setTimeout(crossfadeMusic, delay);
+  };
+  if (Number.isFinite(a.duration) && a.duration > 15) schedule();
+  else a.addEventListener('loadedmetadata', schedule, { once:true });
+}
+function crossfadeMusic(){
+  if (!state.audio.enabled || !state.audio.music || state.audioPlayers.length < 2) return;
+  const from = state.audioPlayers[state.activeAudioIndex];
+  const nextIndex = state.activeAudioIndex === 0 ? 1 : 0;
+  const to = state.audioPlayers[nextIndex];
+  const target = musicTargetVolume();
+  try { to.currentTime = 0; } catch(e) {}
+  to.volume = 0;
+  to.play().catch(()=>{});
+  const start = performance.now();
+  const durMs = MUSIC_CROSSFADE_SECONDS * 1000;
+  const step = (now) => {
+    const t = Math.min(1, (now - start) / durMs);
+    // Equal-power-ish crossfade: smoother than linear for music beds.
+    const fadeIn = Math.sin(t * Math.PI / 2);
+    const fadeOut = Math.cos(t * Math.PI / 2);
+    to.volume = target * fadeIn;
+    from.volume = target * fadeOut;
+    if (t < 1) state.musicRaf = requestAnimationFrame(step);
+    else {
+      from.pause();
+      try { from.currentTime = 0; } catch(e) {}
+      from.volume = 0;
+      to.volume = target;
+      state.activeAudioIndex = nextIndex;
+      scheduleMusicCrossfade();
+    }
+  };
+  state.musicRaf = requestAnimationFrame(step);
+}
+function syncAudio(){
+  syncAudioControls();
+  updateAudioButton();
+  if (!state.audio.enabled || !state.audio.music) { stopMusic(); return; }
+  initMusicPlayers();
+  for (const a of state.audioPlayers) if (!a.paused) a.volume = musicTargetVolume();
+  startMusic();
 }
 function initAudio(){
   if (state.audioCtx) return;
   const Ctx = window.AudioContext || window.webkitAudioContext;
   if (!Ctx) return;
   state.audioCtx = new Ctx();
-  state.audioMusicGain = state.audioCtx.createGain();
-  state.audioMusicGain.gain.value = 0;
-  state.audioMusicGain.connect(state.audioCtx.destination);
-  const freqs = [196, 246.94, 293.66];
-  state.audioOscillators = freqs.map((f, i)=>{
-    const osc = state.audioCtx.createOscillator();
-    const g = state.audioCtx.createGain();
-    osc.type = i === 0 ? 'sine' : 'triangle';
-    osc.frequency.value = f;
-    g.gain.value = i === 0 ? .20 : .07;
-    osc.connect(g); g.connect(state.audioMusicGain); osc.start();
-    return osc;
-  });
-}
-function syncAudio(){
-  if (!state.audio.enabled || !state.audio.music) {
-    if (state.audioMusicGain) state.audioMusicGain.gain.setTargetAtTime(0, state.audioCtx.currentTime, .12);
-    return;
-  }
-  initAudio();
-  if (state.audioCtx?.state === 'suspended') state.audioCtx.resume();
-  const vol = Math.max(0, Math.min(1, (state.audio.musicVolume||0)/100)) * .16;
-  state.audioMusicGain?.gain.setTargetAtTime(vol, state.audioCtx.currentTime, .18);
 }
 function playSfx(type='chip'){
   if (!state.audio.enabled || !state.audio.effects) return;
