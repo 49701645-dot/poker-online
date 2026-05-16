@@ -155,12 +155,12 @@ input{outline:none;font-family:inherit}
 #game-main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
   position:relative;padding:8px;min-width:0;overflow:hidden;
   transition:padding-right 0.3s}
-#game-main.sidebar-open{padding-right:240px}
+#game-main.sidebar-open{padding-right:170px}
 
 /* Sidebar: fixed on the right, full height, never pushes the table */
 #game-sidebar{
   position:fixed;right:0;top:0;bottom:0;
-  width:240px;
+  width:170px;
   display:none;flex-direction:column;
   background:rgba(6,13,10,0.94);
   border-left:1px solid rgba(201,168,76,0.16);
@@ -653,7 +653,7 @@ input{outline:none;font-family:inherit}
 @media(max-width:768px){
   #game-sidebar{display:none}
   #game-sidebar.in-room{display:flex}
-  #game-sidebar.mobile-open{display:flex;position:fixed;right:0;top:0;bottom:0;z-index:100;width:240px;box-shadow:-20px 0 60px rgba(0,0,0,0.8)}
+  #game-sidebar.mobile-open{display:flex;position:fixed;right:0;top:0;bottom:0;z-index:100;width:min(86vw,300px);box-shadow:-20px 0 60px rgba(0,0,0,0.8)}
   #table-wrap{width:96vw;height:58vh;min-height:280px}
   .seat-avatar{width:40px;height:40px;font-size:1rem}
   .seat-name{font-size:0.65rem;padding:2px 6px;max-width:70px}
@@ -685,6 +685,23 @@ input{outline:none;font-family:inherit}
 .seat.my-seat .seat-stack{display:block!important;color:var(--gold2);font-weight:900}.seat:not(.my-seat) .seat-stack.rival-hidden{display:none!important}.seat-status{font-size:.65rem;font-weight:800;color:var(--text2);background:rgba(0,0,0,.45);padding:2px 7px;border-radius:999px}.sidebar-hidden #game-sidebar{display:none!important}.sidebar-hidden #game-main{width:100%!important}
 @media(max-width:768px){#game-layout{display:block}#game-main{width:100%;height:100%}#game-sidebar.in-room{display:none}#game-sidebar.mobile-open{display:flex!important;position:fixed;right:0;top:0;bottom:0;z-index:100;width:min(86vw,300px);box-shadow:-20px 0 60px rgba(0,0,0,.8)}#table-wrap{width:98vw;height:calc(var(--vh,1vh)*56);margin-top:50px}#my-hand-controls{bottom:78px}.seat-stack{font-size:.62rem}.seat:not(.my-seat) .seat-stack{display:none!important}#exchange-panel{bottom:136px}.top-btn{padding:7px 9px;font-size:.75rem}.top-bar-left{min-width:0}.room-name-badge{max-width:115px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.card{width:34px!important;height:50px!important}.card-community{width:40px!important;height:58px!important}#actions-hud{bottom:4px}.actions-row{gap:5px}.action-btn{min-width:62px;padding:8px 8px;font-size:.75rem}}
 @media(max-width:480px){#table-wrap{height:calc(var(--vh,1vh)*53);min-height:310px}.seat-avatar{width:34px;height:34px}.seat-name{max-width:62px;font-size:.58rem}.seat-cards{gap:1px}.card{width:30px!important;height:44px!important}.card-community{width:34px!important;height:50px!important}#pot-display{transform:scale(.86)}#my-stack-pill{padding:5px 9px;font-size:.78rem}.host-grid{grid-template-columns:1fr}.lobby-header{gap:6px}.lobby-search{max-width:120px}}
+
+
+/* ---- FINAL UX FIXES ---- */
+#game-sidebar{max-width:42vw}
+#sidebar-tabs{font-size:.76rem}
+.sidebar-tab{padding:10px 6px!important;font-size:.72rem!important}
+.sidebar-close{padding:0 9px!important}
+#chat-input-row.chat-disabled{opacity:.85;align-items:center;justify-content:center;color:var(--text2);font-size:.82rem;text-align:center;padding:10px 12px}
+#chat-input-row.chat-disabled input,#chat-input-row.chat-disabled button{display:none!important}
+#chat-disabled-note{display:none;color:var(--text2);line-height:1.25}
+#chat-input-row.chat-disabled #chat-disabled-note{display:block}
+#audio-popover{position:absolute;top:54px;right:84px;z-index:120;display:none;width:230px;background:rgba(6,13,10,.96);border:1px solid rgba(201,168,76,.3);border-radius:14px;padding:12px;box-shadow:0 14px 45px rgba(0,0,0,.7);backdrop-filter:blur(14px)}
+#audio-popover.active{display:block}
+.audio-title{font-weight:900;color:var(--gold2);margin-bottom:8px;font-size:.9rem}.audio-row{display:flex;align-items:center;gap:8px;margin:8px 0;color:var(--text2);font-size:.82rem}.audio-row input[type="range"]{flex:1;accent-color:#c9a84c}.audio-row button{flex:1}
+body.compact-mode #table-wrap{transform:scale(.94);transform-origin:center center}body.compact-mode .seat-name,body.compact-mode .seat-status{font-size:.6rem}body.compact-mode .seat-avatar{width:40px;height:40px}body.compact-mode .card{width:36px!important;height:52px!important}
+@media(min-width:769px){#game-sidebar.in-room:not(.mobile-open){width:170px}.player-list-item{padding:8px 6px}.player-list-actions{gap:3px}.pl-action-btn{padding:4px 5px;font-size:.64rem}.player-list-name{font-size:.78rem}.player-list-stack{font-size:.72rem}#chat-messages{padding:10px 8px}.chat-msg{font-size:.78rem}.top-bar-right{gap:6px}.top-btn{padding:6px 10px}}
+@media(max-width:768px){#audio-popover{right:10px;top:52px;width:min(92vw,260px)}#game-sidebar.mobile-open{width:min(86vw,300px)!important}.sidebar-tab{font-size:.78rem!important}}
 
 </style>
 </head>
@@ -745,9 +762,18 @@ input{outline:none;font-family:inherit}
         <div class="top-bar-right">
           <button class="top-btn top-btn-eye" id="btn-copy-link" onclick="copyRoomLink()">🔗 Link</button>
           <button class="top-btn top-btn-eye" id="btn-open-sidebar" onclick="toggleSidebar()">💬 Panel</button>
+          <button class="top-btn top-btn-eye" id="btn-audio" onclick="toggleAudioPopover()">🔇 Audio</button>
           <button class="top-btn top-btn-host" id="btn-host-panel" onclick="toggleHostPanel()" style="display:none">👑 Admin</button>
           <button class="top-btn top-btn-leave" onclick="confirmLeave()">🚪 Salir</button>
         </div>
+      </div>
+      <div id="audio-popover">
+        <div class="audio-title">🎵 Audio</div>
+        <div class="audio-row"><button class="top-btn top-btn-eye" id="audio-toggle" onclick="toggleAudioEnabled()">Activar audio</button></div>
+        <label class="audio-row"><input type="checkbox" id="audio-music" onchange="saveAudioPrefs(); syncAudio()"> Música</label>
+        <label class="audio-row"><input type="checkbox" id="audio-effects" onchange="saveAudioPrefs()"> Efectos</label>
+        <label class="audio-row">Música <input type="range" id="audio-music-volume" min="0" max="100" value="18" oninput="saveAudioPrefs(); syncAudio()"></label>
+        <label class="audio-row">Efectos <input type="range" id="audio-effects-volume" min="0" max="100" value="35" oninput="saveAudioPrefs()"></label>
       </div>
 
       <!-- Table -->
@@ -827,7 +853,7 @@ input{outline:none;font-family:inherit}
       <!-- Eliminated Screen -->
       <div id="eliminated-screen">
         <div class="elim-title">💀 ELIMINADO</div>
-        <div class="elim-sub">Quedaste sin fichas. Estás en modo espectador.<br>Puedes pedir a los jugadores que te dejen revivir.</div>
+        <div class="elim-sub">Quedaste sin fichas. Podés seguir mirando la mesa y pedir revive cuando la sala lo permita.</div>
         <button class="elim-revive-btn" onclick="requestRevive()">🔄 Solicitar Revivir</button>
       </div>
 
@@ -891,6 +917,7 @@ input{outline:none;font-family:inherit}
         </div>
       </div>
       <div id="chat-input-row">
+        <span id="chat-disabled-note">🔕 Chat escrito desactivado. Solo se muestran alertas del sistema.</span>
         <input id="chat-input" placeholder="Mensaje..." maxlength="200" onkeydown="if(event.key==='Enter')sendChat()"/>
         <button id="chat-send" onclick="sendChat()">➤</button>
       </div>
@@ -1052,6 +1079,9 @@ const state = {
   selectedExchangeCards: [],
   audioReady: false,
   audioCtx: null,
+  audioMusicGain: null,
+  audioOscillators: [],
+  audio: { enabled:false, music:true, effects:true, musicVolume:18, effectsVolume:35 }
 };
 function setAppVh(){ document.documentElement.style.setProperty('--vh', (window.visualViewport?.height || window.innerHeight) * 0.01 + 'px'); }
 window.addEventListener('resize', setAppVh);
@@ -1314,6 +1344,8 @@ function renderGameState(gs) {
   // Players sidebar
   renderPlayersList(gs);
   renderHostPanel(gs);
+  updateChatModeUI(gs.settings || {});
+  applyCompactMode(gs.settings || {});
 
   // Host UI
   state.isHost = gs.players.find(p=>p.id===gs.myId)?.isHost || gs.hostId === gs.myId;
@@ -1553,7 +1585,10 @@ function renderReviveRequest(gs) {
 function renderPlayersList(gs) {
   const list = document.getElementById('players-list');
   list.innerHTML = '';
-  const allParticipants = [...gs.players, ...gs.spectators.map(s=>({...s,stack:0,spectator:true}))];
+  const participantMap = new Map();
+  gs.players.forEach(p => participantMap.set(p.id, p));
+  gs.spectators.forEach(s => { if (!participantMap.has(s.id)) participantMap.set(s.id, {...s,stack:0,spectator:true}); });
+  const allParticipants = [...participantMap.values()];
 
   allParticipants.forEach(p => {
     const div = document.createElement('div');
@@ -1631,9 +1666,12 @@ function confirmExchange(){
 function skipExchange(){ state.selectedExchangeCards = []; socket.emit('exchangeCards', { indices: [] }); document.getElementById('exchange-panel').style.display='none'; }
 function toggleSidebar(force){
   const side = document.getElementById('game-sidebar');
-  const open = force === undefined ? !side.classList.contains('mobile-open') : !!force;
-  side.classList.toggle('mobile-open', open);
-  document.body.classList.toggle('sidebar-hidden', !open && window.innerWidth > 768);
+  if (!side) return;
+  const isMobile = window.innerWidth <= 768;
+  const currentlyOpen = isMobile ? side.classList.contains('mobile-open') : !document.body.classList.contains('sidebar-hidden');
+  const open = force === undefined ? !currentlyOpen : !!force;
+  side.classList.toggle('mobile-open', open && isMobile);
+  document.body.classList.toggle('sidebar-hidden', !open && !isMobile);
 }
 function copyRoomLink(){
   if (!state.roomId) return;
@@ -1973,11 +2011,103 @@ function addChatMessage(msg) {
 }
 
 function sendChat() {
+  const mode = state.gameState?.settings?.chatMode || 'full';
+  if (mode !== 'full') return showNotif('El chat escrito está desactivado en esta sala.', 'warning');
   const input = document.getElementById('chat-input');
   const text = input.value.trim();
   if (!text) return;
   socket.emit('chatMessage', { text });
   input.value = '';
+}
+
+
+function updateChatModeUI(settings) {
+  const row = document.getElementById('chat-input-row');
+  const input = document.getElementById('chat-input');
+  if (!row || !input) return;
+  const mode = settings.chatMode || 'full';
+  const disabled = mode === 'alerts' || mode === 'disabled';
+  row.classList.toggle('chat-disabled', disabled);
+  input.disabled = disabled;
+  input.placeholder = disabled ? 'Chat desactivado' : 'Mensaje...';
+}
+function applyCompactMode(settings) {
+  document.body.classList.toggle('compact-mode', !!settings.compactMode);
+}
+
+// ============================================================ AUDIO
+function loadAudioPrefs(){
+  try {
+    const raw = localStorage.getItem('royalPokerAudio');
+    if (raw) state.audio = { ...state.audio, ...JSON.parse(raw) };
+  } catch(e) {}
+  const m=document.getElementById('audio-music'), fx=document.getElementById('audio-effects');
+  const mv=document.getElementById('audio-music-volume'), fv=document.getElementById('audio-effects-volume');
+  if(m) m.checked=!!state.audio.music; if(fx) fx.checked=!!state.audio.effects;
+  if(mv) mv.value=state.audio.musicVolume; if(fv) fv.value=state.audio.effectsVolume;
+  updateAudioButton();
+}
+function saveAudioPrefs(){
+  const m=document.getElementById('audio-music'), fx=document.getElementById('audio-effects');
+  const mv=document.getElementById('audio-music-volume'), fv=document.getElementById('audio-effects-volume');
+  if(m) state.audio.music=m.checked; if(fx) state.audio.effects=fx.checked;
+  if(mv) state.audio.musicVolume=parseInt(mv.value)||0; if(fv) state.audio.effectsVolume=parseInt(fv.value)||0;
+  localStorage.setItem('royalPokerAudio', JSON.stringify(state.audio));
+  updateAudioButton();
+}
+function toggleAudioPopover(){ document.getElementById('audio-popover')?.classList.toggle('active'); }
+function toggleAudioEnabled(){
+  state.audio.enabled = !state.audio.enabled;
+  localStorage.setItem('royalPokerAudio', JSON.stringify(state.audio));
+  if (state.audio.enabled) initAudio();
+  syncAudio(); updateAudioButton();
+}
+function updateAudioButton(){
+  const btn=document.getElementById('btn-audio'), t=document.getElementById('audio-toggle');
+  if(btn) btn.textContent = state.audio.enabled ? '🔊 Audio' : '🔇 Audio';
+  if(t) t.textContent = state.audio.enabled ? 'Desactivar audio' : 'Activar audio';
+}
+function initAudio(){
+  if (state.audioCtx) return;
+  const Ctx = window.AudioContext || window.webkitAudioContext;
+  if (!Ctx) return;
+  state.audioCtx = new Ctx();
+  state.audioMusicGain = state.audioCtx.createGain();
+  state.audioMusicGain.gain.value = 0;
+  state.audioMusicGain.connect(state.audioCtx.destination);
+  const freqs = [196, 246.94, 293.66];
+  state.audioOscillators = freqs.map((f, i)=>{
+    const osc = state.audioCtx.createOscillator();
+    const g = state.audioCtx.createGain();
+    osc.type = i === 0 ? 'sine' : 'triangle';
+    osc.frequency.value = f;
+    g.gain.value = i === 0 ? .20 : .07;
+    osc.connect(g); g.connect(state.audioMusicGain); osc.start();
+    return osc;
+  });
+}
+function syncAudio(){
+  if (!state.audio.enabled || !state.audio.music) {
+    if (state.audioMusicGain) state.audioMusicGain.gain.setTargetAtTime(0, state.audioCtx.currentTime, .12);
+    return;
+  }
+  initAudio();
+  if (state.audioCtx?.state === 'suspended') state.audioCtx.resume();
+  const vol = Math.max(0, Math.min(1, (state.audio.musicVolume||0)/100)) * .16;
+  state.audioMusicGain?.gain.setTargetAtTime(vol, state.audioCtx.currentTime, .18);
+}
+function playSfx(type='chip'){
+  if (!state.audio.enabled || !state.audio.effects) return;
+  initAudio();
+  if (!state.audioCtx) return;
+  if (state.audioCtx.state === 'suspended') state.audioCtx.resume();
+  const ctx=state.audioCtx, osc=ctx.createOscillator(), gain=ctx.createGain();
+  const map={turn:660,win:880,chat:420,card:520,revive:740,error:180,chip:360};
+  osc.frequency.value=map[type]||360; osc.type='sine';
+  const vol=Math.max(0,Math.min(1,(state.audio.effectsVolume||0)/100))*0.08;
+  gain.gain.setValueAtTime(vol, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime+0.16);
+  osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime+0.18);
 }
 
 // ============================================================ SIDEBAR TABS
@@ -1987,7 +2117,7 @@ function switchTab(tab) {
   if (tabs[0]) tabs[0].classList.toggle('active', tab==='chat');
   if (tabs[1]) tabs[1].classList.toggle('active', tab==='players');
   if (tabs[2]) tabs[2].classList.toggle('active', tab==='host');
-  document.getElementById('tab-chat').style.display = tab==='chat'?'block':'none';
+  document.getElementById('tab-chat').style.display = tab==='chat'?'flex':'none';
   document.getElementById('tab-players').style.display = tab==='players'?'block':'none';
   document.getElementById('tab-host').style.display = tab==='host'?'block':'none';
   document.getElementById('host-panel').style.display = tab==='host'?'block':'none';
@@ -2050,6 +2180,7 @@ socket.on('turnStart', (data) => {
   if (isMyTurn) {
     startTimer(data.timeout, data.ts);
     showNotif('¡Es tu turno!', 'info');
+    playSfx('turn');
   } else {
     clearTimer();
   }
@@ -2058,21 +2189,26 @@ socket.on('turnStart', (data) => {
 socket.on('showdown', (data) => {
   renderShowdown(data);
   clearTimer();
+  playSfx('win');
 });
 
 socket.on('chatMessage', (msg) => {
   addChatMessage(msg);
+  if (msg.system) playSfx(msg.type === 'error' ? 'error' : (msg.type === 'revive' ? 'revive' : 'chip'));
+  else playSfx('chat');
 });
 
 socket.on('eliminated', () => {
   state.isEliminated = true;
-  showNotif('💀 Quedaste eliminado. Puedes pedir revivir.', 'warning');
+  showNotif('💀 Quedaste sin fichas. Podés pedir revivir.', 'warning');
+  playSfx('error');
   clearTimer();
 });
 
 socket.on('revived', (data) => {
   state.isEliminated = false;
   showNotif(`✅ ¡Reviviste con ${data.stack} fichas!`, 'success');
+  playSfx('revive');
 });
 
 socket.on('kicked', (data) => {
@@ -2103,6 +2239,8 @@ socket.on('error', (data) => {
 
 // ============================================================ INIT
 createStars();
+loadAudioPrefs();
+syncAudio();
 const directRoom = new URLSearchParams(location.search).get('room');
 if (directRoom) {
   state.pendingDirectRoom = directRoom;
