@@ -857,6 +857,24 @@ body.sidebar-hidden #game-sidebar.mobile-open{display:none!important;opacity:0!i
 .menu-audio-row{display:flex;align-items:center;gap:8px;margin:7px 0;color:var(--text2);font-size:.82rem}.menu-audio-row input[type="range"]{flex:1;accent-color:#c9a84c}.menu-audio-row input[type="checkbox"]{accent-color:#c9a84c}
 .audio-note{color:var(--text3);font-size:.72rem;line-height:1.2;margin-top:6px}
 
+
+/* ---- POLISH PACK: cleaner symbols, invite UX, emotes, history, all-in ---- */
+.ico{display:inline-flex;align-items:center;justify-content:center;width:1.15em;height:1.15em;border:1px solid currentColor;border-radius:50%;font-size:.72em;font-weight:900;line-height:1;margin-right:.42em;vertical-align:.06em}
+.ico-card::before{content:"♠"}.ico-search::before{content:"⌕"}.ico-lock::before{content:"∎"}.ico-edit::before{content:"✎"}.ico-music::before{content:"♪"}.ico-link::before{content:"↗"}.ico-chat::before{content:"…"}.ico-audio::before{content:"♪"}.ico-settings::before{content:"⚙"}.ico-exit::before{content:"×"}.ico-eye::before{content:"◉"}.ico-chip::before{content:"¢"}.ico-user::before{content:"•"}.ico-host::before{content:"★"}.ico-play::before{content:"▶"}.ico-history::before{content:"≡"}.ico-copy::before{content:"↗"}
+.menu-tagline{margin-top:8px;color:var(--text2);font-size:.92rem;letter-spacing:.05em;text-transform:uppercase}
+.lobby-join-strip{width:min(900px,95vw);display:grid;grid-template-columns:1fr auto;gap:10px;margin:0 0 14px 0;background:rgba(0,0,0,.22);border:1px solid rgba(201,168,76,.18);border-radius:14px;padding:10px}
+.lobby-join-strip input{text-transform:uppercase}
+.room-card{display:grid!important;grid-template-columns:1fr auto;gap:12px;align-items:center}
+.room-card-main{min-width:0}.room-card-name{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.room-lock{font-size:.72rem;color:var(--gold2);border:1px solid rgba(201,168,76,.32);border-radius:999px;padding:2px 7px}.room-card-info{margin-top:7px;flex-wrap:wrap}.room-stat{display:inline-flex;align-items:center;gap:5px}.room-stat::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--gold3);box-shadow:0 0 10px rgba(201,168,76,.5)}
+.invite-box{margin:12px auto 0;width:min(430px,92%);padding:12px;border:1px dashed rgba(201,168,76,.42);border-radius:14px;background:rgba(0,0,0,.24);text-align:center}.invite-box-title{font-weight:900;color:var(--gold2);margin-bottom:6px}.invite-box-code{font-family:monospace;color:var(--text);letter-spacing:.08em;margin-bottom:10px}
+.emote-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:8px 12px;border-top:1px solid rgba(201,168,76,.1);background:rgba(0,0,0,.22)}.emote-btn{padding:7px 6px;border:1px solid rgba(201,168,76,.22);border-radius:10px;background:rgba(201,168,76,.08);color:var(--gold2);font-size:.72rem;font-weight:900;letter-spacing:.04em}.emote-btn:hover{background:rgba(201,168,76,.18)}
+.emote-pop{position:absolute;left:50%;top:-18px;transform:translateX(-50%);padding:5px 9px;border-radius:999px;background:rgba(201,168,76,.93);color:#07120d;font-size:.68rem;font-weight:1000;letter-spacing:.08em;box-shadow:0 8px 20px rgba(0,0,0,.45);animation:emoteFloat 2s ease forwards;pointer-events:none;z-index:20}@keyframes emoteFloat{0%{opacity:0;transform:translate(-50%,8px) scale(.9)}18%{opacity:1;transform:translate(-50%,0) scale(1)}100%{opacity:0;transform:translate(-50%,-26px) scale(.96)}}
+#allin-flash{position:fixed;inset:0;z-index:420;display:none;align-items:center;justify-content:center;pointer-events:none;background:radial-gradient(circle,rgba(142,68,173,.24),rgba(0,0,0,.04) 55%,rgba(0,0,0,.0));font-family:'Cinzel',serif;font-size:clamp(2.3rem,8vw,6rem);font-weight:900;color:#e7c768;text-shadow:0 0 35px rgba(201,168,76,.8)}#allin-flash.active{display:flex;animation:allinFlash 1.35s ease forwards}@keyframes allinFlash{0%{opacity:0;transform:scale(.7)}18%{opacity:1;transform:scale(1.06)}42%{transform:scale(.98)}100%{opacity:0;transform:scale(1.18)}}
+.showdown-grid{display:grid;gap:10px}.showdown-winner{font-size:.98rem!important}.showdown-handline{margin-top:4px;color:var(--text2);font-size:.86rem}.showdown-allplayers{margin-top:12px;border-top:1px solid rgba(201,168,76,.16);padding-top:10px;display:grid;gap:6px}.showdown-player-row{display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(255,255,255,.035);border-radius:10px;padding:7px 9px;font-size:.82rem}.showdown-player-cards{display:flex;gap:3px}.showdown-player-cards .card{width:28px!important;height:40px!important;font-size:.72rem!important}
+.history-box{display:none;height:100%;overflow:auto}.history-box.active{display:block}.history-line{padding:7px 9px;border-left:2px solid rgba(201,168,76,.25);background:rgba(255,255,255,.035);border-radius:8px;margin-bottom:6px;font-size:.82rem;color:var(--text2)}
+.avatar-initial{font-family:'Cinzel',serif;font-weight:900;color:var(--gold2);font-size:1rem}.host-crown{font-size:.74rem!important}.host-crown::before{content:'★';color:var(--gold2)}.host-crown{color:transparent!important}.disconnected-overlay,.eliminated-overlay{font-size:0!important}.disconnected-overlay::before{content:'OFF';font-size:.55rem}.eliminated-overlay::before{content:'OUT';font-size:.55rem}
+@media(max-width:620px){.lobby-join-strip{grid-template-columns:1fr}.room-card{grid-template-columns:1fr}.room-card-join{width:100%}.emote-bar{grid-template-columns:repeat(2,1fr)}}
+
 </style>
 </head>
 <body>
@@ -871,6 +889,7 @@ body.sidebar-hidden #game-sidebar.mobile-open{display:none!important;opacity:0!i
   <div class="menu-logo">
     <div class="menu-logo-title">ROYAL POKER</div>
     <div class="menu-logo-sub">Texas Hold'em Online</div>
+    <div class="menu-tagline">Sin descarga · salas privadas · chat en vivo</div>
     <div class="menu-deco"></div>
   </div>
   <div class="menu-cards">
@@ -880,13 +899,13 @@ body.sidebar-hidden #game-sidebar.mobile-open{display:none!important;opacity:0!i
     <div class="menu-card-demo" style="--df:2.5s;--dd:0.9s">♣</div>
   </div>
   <div class="menu-btns">
-    <button class="menu-btn menu-btn-primary" onclick="showCreateRoom()">🃏 Crear Sala</button>
-    <button class="menu-btn menu-btn-secondary" onclick="showLobby()">🔍 Salas Públicas</button>
-    <button class="menu-btn menu-btn-secondary" onclick="showJoinPrivate()">🔒 Unirse con Código</button>
-    <button class="menu-btn menu-btn-secondary" onclick="openNameGate(true)">✏️ Cambiar Nombre</button>
+    <button class="menu-btn menu-btn-primary" onclick="showCreateRoom()"><span class="ico ico-card"></span>Crear Sala</button>
+    <button class="menu-btn menu-btn-secondary" onclick="showLobby()"><span class="ico ico-search"></span>Salas Públicas</button>
+    <button class="menu-btn menu-btn-secondary" onclick="showJoinPrivate()"><span class="ico ico-lock"></span>Unirse con Código</button>
+    <button class="menu-btn menu-btn-secondary" onclick="openNameGate(true)"><span class="ico ico-edit"></span>Cambiar Nombre</button>
     <div class="current-name-pill" id="current-name-pill"></div>
     <div class="menu-audio-panel">
-      <div class="menu-audio-head"><span>🎵 Música del juego</span><button id="menu-audio-toggle" onclick="toggleAudioEnabled()">Activar</button></div>
+      <div class="menu-audio-head"><span><span class="ico ico-music"></span>Música del juego</span><button id="menu-audio-toggle" onclick="toggleAudioEnabled()">Activar</button></div>
       <label class="menu-audio-row"><input type="checkbox" id="menu-audio-music" onchange="saveAudioPrefs(); syncAudio()"> Música</label>
       <label class="menu-audio-row"><input type="checkbox" id="menu-audio-effects" onchange="saveAudioPrefs()"> Efectos</label>
       <label class="menu-audio-row">Música <input type="range" id="menu-audio-music-volume" min="0" max="100" value="18" oninput="saveAudioPrefs(); syncAudio()"></label>
@@ -901,9 +920,13 @@ body.sidebar-hidden #game-sidebar.mobile-open{display:none!important;opacity:0!i
   <div class="lobby-header">
     <button class="btn btn-ghost btn-sm" onclick="showScreen('screen-menu')">← Volver</button>
     <div class="lobby-title">Salas Disponibles</div>
-    <input class="lobby-search" id="lobby-search" placeholder="🔍 Buscar sala..." oninput="filterRooms()"/>
+    <input class="lobby-search" id="lobby-search" placeholder="Buscar sala..." oninput="filterRooms()"/>
     <select class="lobby-search" id="lobby-mode-filter" onchange="filterRooms()" style="max-width:160px"><option value="all">Todos</option><option value="texas">Texas</option><option value="classic">Clásico</option></select>
     <button class="btn btn-gold btn-sm" onclick="showCreateRoom()">+ Crear</button>
+  </div>
+  <div class="lobby-join-strip">
+    <input class="form-input" id="quick-room-code" placeholder="Código de sala" maxlength="10" onkeydown="if(event.key==='Enter')quickJoinByCode()"/>
+    <button class="btn btn-gold btn-sm" onclick="quickJoinByCode()"><span class="ico ico-play"></span>Entrar con código</button>
   </div>
   <div class="rooms-grid" id="rooms-grid">
     <div class="no-rooms">Cargando salas...</div>
@@ -922,15 +945,15 @@ body.sidebar-hidden #game-sidebar.mobile-open{display:none!important;opacity:0!i
           <div class="hand-badge" id="phase-text">Esperando</div>
         </div>
         <div class="top-bar-right">
-          <button class="top-btn top-btn-eye" id="btn-copy-link" onclick="copyRoomLink()">🔗 Link</button>
-          <button class="top-btn top-btn-eye" id="btn-open-sidebar" onclick="toggleSidebar()">💬 Panel</button>
-          <button class="top-btn top-btn-eye" id="btn-audio" onclick="toggleAudioPopover()">🔇 Audio</button>
-          <button class="top-btn top-btn-host" id="btn-host-panel" onclick="toggleHostPanel()" style="display:none">⚙️ Avanzadas</button>
-          <button class="top-btn top-btn-leave" onclick="confirmLeave()">🚪 Salir</button>
+          <button class="top-btn top-btn-eye" id="btn-copy-link" onclick="copyRoomLink()"><span class="ico ico-link"></span>Invitar</button>
+          <button class="top-btn top-btn-eye" id="btn-open-sidebar" onclick="toggleSidebar()"><span class="ico ico-chat"></span>Chat</button>
+          <button class="top-btn top-btn-eye" id="btn-audio" onclick="toggleAudioPopover()"><span class="ico ico-audio"></span>Audio</button>
+          <button class="top-btn top-btn-host" id="btn-host-panel" onclick="toggleHostPanel()" style="display:none"><span class="ico ico-settings"></span>Ajustes</button>
+          <button class="top-btn top-btn-leave" onclick="confirmLeave()"><span class="ico ico-exit"></span>Salir</button>
         </div>
       </div>
       <div id="audio-popover">
-        <div class="audio-title">🎵 Audio</div>
+        <div class="audio-title"><span class="ico ico-audio"></span>Audio</div>
         <div class="audio-row"><button class="top-btn top-btn-eye" id="audio-toggle" onclick="toggleAudioEnabled()">Activar audio</button></div>
         <label class="audio-row"><input type="checkbox" id="audio-music" onchange="saveAudioPrefs(); syncAudio()"> Música</label>
         <label class="audio-row"><input type="checkbox" id="audio-effects" onchange="saveAudioPrefs()"> Efectos</label>
@@ -957,27 +980,27 @@ body.sidebar-hidden #game-sidebar.mobile-open{display:none!important;opacity:0!i
       </div>
 
       <!-- Spectator Banner -->
-      <div id="spectator-banner">👁 Eres espectador</div>
+      <div id="spectator-banner"><span class="ico ico-eye"></span>Eres espectador</div>
 
       <!-- Revive Request Banner -->
       <div id="revive-request-banner">
-        <div class="revive-title">🔄 Solicitud de Revivir</div>
+        <div class="revive-title">Solicitud de Revivir</div>
         <div id="revive-requester-name"></div>
         <div id="revive-vote-count"></div>
         <div class="revive-btns">
-          <button class="btn btn-gold btn-sm" onclick="voteRevive(true)">✅ Sí</button>
-          <button class="btn btn-red btn-sm" onclick="voteRevive(false)">❌ No</button>
+          <button class="btn btn-gold btn-sm" onclick="voteRevive(true)">Sí</button>
+          <button class="btn btn-red btn-sm" onclick="voteRevive(false)">No</button>
         </div>
       </div>
 
       <!-- My hand controls -->
       <div id="my-hand-info"></div>
       <div id="my-hand-controls" style="display:none">
-        <span id="my-stack-pill">💰 0 fichas</span>
-        <button class="top-btn top-btn-eye" id="btn-hide-cards" onclick="toggleHideCards()">🙈 Ocultar cartas</button>
+        <span id="my-stack-pill"><span class="ico ico-chip"></span>0 fichas</span>
+        <button class="top-btn top-btn-eye" id="btn-hide-cards" onclick="toggleHideCards()">Ocultar cartas</button>
       </div>
       <div id="exchange-panel" style="display:none">
-        <div id="exchange-title">🔄 Cambio de cartas</div>
+        <div id="exchange-title">Cambio de cartas</div>
         <div id="exchange-counter">Seleccionadas: 0/3</div>
         <button class="btn btn-gold btn-sm" onclick="confirmExchange()">Cambiar seleccionadas</button>
         <button class="btn btn-ghost btn-sm" onclick="skipExchange()">No cambiar</button>
@@ -1000,29 +1023,34 @@ body.sidebar-hidden #game-sidebar.mobile-open{display:none!important;opacity:0!i
           <button class="action-btn btn-call" id="btn-call" onclick="doAction('call')" style="display:none">Call</button>
           <button class="action-btn btn-raise" id="btn-raise" onclick="toggleRaiseRow()">Raise</button>
           <button class="action-btn btn-raise" id="btn-raise-confirm" onclick="doAction('raise')" style="display:none">✓ Raise</button>
-          <button class="action-btn btn-allin" id="btn-allin" onclick="doAction('allin')">All-In 💥</button>
+          <button class="action-btn btn-allin" id="btn-allin" onclick="doAction('allin')">All-In</button>
         </div>
       </div>
 
       <!-- Waiting Room -->
       <div id="waiting-room" class="active">
-        <div class="waiting-title">🃏 Sala de Espera</div>
+        <div class="waiting-title">Sala de Espera</div>
         <div class="waiting-players" id="waiting-players"></div>
         <div class="waiting-info" id="waiting-info">Esperando jugadores...</div>
-        <button class="waiting-start-btn" id="waiting-start-btn" onclick="startGame()">🎮 Iniciar Partida</button>
+        <div class="invite-box">
+          <div class="invite-box-title">Invitá a tus amigos</div>
+          <div class="invite-box-code" id="invite-room-code">Código: ---</div>
+          <button class="btn btn-gold btn-sm" onclick="copyRoomLink()"><span class="ico ico-copy"></span>Copiar link de sala</button>
+        </div>
+        <button class="waiting-start-btn" id="waiting-start-btn" onclick="startGame()">Iniciar Partida</button>
       </div>
 
       <!-- Eliminated Screen -->
       <div id="eliminated-screen">
-        <div class="elim-title">💀 ELIMINADO</div>
+        <div class="elim-title">ELIMINADO</div>
         <div class="elim-sub">Quedaste sin fichas. Podés seguir mirando la mesa y pedir revive cuando la sala lo permita.</div>
-        <button class="elim-revive-btn" onclick="requestRevive()">🔄 Solicitar Revivir</button>
+        <button class="elim-revive-btn" onclick="requestRevive()">Solicitar Revivir</button>
       </div>
 
       <!-- Showdown Overlay -->
       <div id="showdown-overlay">
         <div class="showdown-panel">
-          <div class="showdown-title">🏆 Showdown</div>
+          <div class="showdown-title">Showdown</div>
           <div class="showdown-winners" id="showdown-winners"></div>
           <button class="btn btn-ghost showdown-close" onclick="closeShowdown()">Continuar</button>
         </div>
@@ -1032,17 +1060,26 @@ body.sidebar-hidden #game-sidebar.mobile-open{display:none!important;opacity:0!i
     <!-- Sidebar -->
     <div id="game-sidebar">
       <div id="sidebar-tabs">
-        <div class="sidebar-tab active" onclick="switchTab('chat')">💬 Chat</div>
-        <div class="sidebar-tab" onclick="switchTab('players')">👥 Jugadores</div>
-        <div class="sidebar-tab" id="tab-host-btn" onclick="switchTab('host')" style="display:none">👑 Host</div>
+        <div class="sidebar-tab active" onclick="switchTab('chat')">Chat</div>
+        <div class="sidebar-tab" onclick="switchTab('players')">Jugadores</div>
+        <div class="sidebar-tab" id="tab-host-btn" onclick="switchTab('host')" style="display:none">Host</div>
         <button class="sidebar-close" onclick="toggleSidebar(false)">×</button>
       </div>
       <div class="sidebar-content" id="sidebar-content">
         <!-- Chat -->
         <div id="tab-chat">
           <div id="chat-messages"></div>
+          <div class="emote-bar">
+            <button class="emote-btn" onclick="sendEmote('BLUFF')">BLUFF</button>
+            <button class="emote-btn" onclick="sendEmote('NICE')">NICE</button>
+            <button class="emote-btn" onclick="sendEmote('WOW')">WOW</button>
+            <button class="emote-btn" onclick="sendEmote('ALL IN')">ALL IN</button>
+            <button class="emote-btn" onclick="sendEmote('GG')">GG</button>
+            <button class="emote-btn" onclick="showHandHistory()">HISTORIAL</button>
+          </div>
+          <div id="hand-history-box" class="history-box"></div>
           <div id="chat-input-row">
-            <span id="chat-disabled-note">🔕 Chat escrito desactivado. Solo se muestran alertas del sistema.</span>
+            <span id="chat-disabled-note">Chat escrito desactivado. Solo se muestran alertas del sistema.</span>
             <input id="chat-input" placeholder="Mensaje..." maxlength="200" onkeydown="if(event.key==='Enter')sendChat()"/>
             <button id="chat-send" onclick="sendChat()">➤</button>
           </div>
@@ -1057,9 +1094,10 @@ body.sidebar-hidden #game-sidebar.mobile-open{display:none!important;opacity:0!i
             <div class="host-section">
               <div class="host-section-title">Partida</div>
               <div class="host-btn-row">
-                <button class="host-btn hbtn-start" id="hbtn-start" onclick="startGame()">▶ Iniciar</button>
-                <button class="host-btn hbtn-restart" onclick="restartGame()">🔄 Reiniciar</button>
-                <button class="host-btn hbtn-end" onclick="endGame()">🛑 Terminar</button>
+                <button class="host-btn hbtn-start" id="hbtn-start" onclick="startGame()">Iniciar</button>
+                <button class="host-btn hbtn-restart" onclick="togglePauseGame()">Pausar/Reanudar</button>
+                <button class="host-btn hbtn-restart" onclick="restartGame()">Reiniciar</button>
+                <button class="host-btn hbtn-end" onclick="endGame()">Terminar</button>
               </div>
             </div>
             <div class="host-section">
@@ -1095,7 +1133,7 @@ body.sidebar-hidden #game-sidebar.mobile-open{display:none!important;opacity:0!i
 <!-- Name Gate -->
 <div class="overlay" id="overlay-name-gate">
   <div class="panel" style="max-width:420px">
-    <div class="panel-title">👤 Elegí tu nombre</div>
+    <div class="panel-title">Elegí tu nombre</div>
     <div class="name-gate-sub">Antes de crear o unirte a una sala, elegí el nombre que van a ver los demás jugadores.</div>
     <div class="form-group">
       <label class="form-label">Nombre de jugador</label>
@@ -1108,7 +1146,7 @@ body.sidebar-hidden #game-sidebar.mobile-open{display:none!important;opacity:0!i
 <!-- Create Room -->
 <div class="overlay" id="overlay-create">
   <div class="panel">
-    <div class="panel-title">🃏 Crear Sala</div>
+    <div class="panel-title"><span class="ico ico-card"></span>Crear Sala</div>
     <div class="form-group">
       <label class="form-label">Tu nombre</label>
       <input class="form-input" id="cr-playername" placeholder="Tu apodo" maxlength="20"/>
@@ -1146,7 +1184,7 @@ body.sidebar-hidden #game-sidebar.mobile-open{display:none!important;opacity:0!i
 
     <div id="create-advanced-box">
       <button type="button" id="create-advanced-toggle" onclick="toggleCreateAdvanced()">
-        <span>⚙️ Personalización avanzada</span><span id="create-advanced-arrow">▼</span>
+        <span>Personalización avanzada</span><span id="create-advanced-arrow">▼</span>
       </button>
       <div id="create-advanced-content">
         <div class="form-group">
@@ -1209,7 +1247,7 @@ body.sidebar-hidden #game-sidebar.mobile-open{display:none!important;opacity:0!i
 <!-- Join Room -->
 <div class="overlay" id="overlay-join">
   <div class="panel">
-    <div class="panel-title">🔍 Unirse a Sala</div>
+    <div class="panel-title">Unirse a Sala</div>
     <div class="form-group">
       <label class="form-label">Tu nombre</label>
       <input class="form-input" id="jr-playername" placeholder="Tu apodo" maxlength="20"/>
@@ -1226,7 +1264,7 @@ body.sidebar-hidden #game-sidebar.mobile-open{display:none!important;opacity:0!i
 <!-- Join Private -->
 <div class="overlay" id="overlay-join-private">
   <div class="panel">
-    <div class="panel-title">🔒 Unirse con Código</div>
+    <div class="panel-title"><span class="ico ico-lock"></span>Unirse con Código</div>
     <div class="form-group">
       <label class="form-label">Tu nombre</label>
       <input class="form-input" id="jp-playername" placeholder="Tu apodo" maxlength="20"/>
@@ -1247,7 +1285,7 @@ body.sidebar-hidden #game-sidebar.mobile-open{display:none!important;opacity:0!i
 <!-- Add Chips Modal -->
 <div id="addchips-modal">
   <div class="panel" style="max-width:360px">
-    <div class="panel-title">💰 Dar Fichas</div>
+    <div class="panel-title">Dar Fichas</div>
     <div style="color:var(--text2);margin-bottom:12px;text-align:center" id="addchips-target-name"></div>
     <div class="form-group">
       <label class="form-label">Cantidad</label>
@@ -1260,14 +1298,15 @@ body.sidebar-hidden #game-sidebar.mobile-open{display:none!important;opacity:0!i
 
 <!-- Game Over -->
 <div id="gameover-overlay">
-  <div class="gameover-title">🏆 ¡CAMPEÓN!</div>
+  <div class="gameover-title"> ¡CAMPEÓN!</div>
   <div class="gameover-winner" id="gameover-winner"></div>
   <div class="gameover-btns">
-    <button class="btn btn-gold" onclick="leaveRoom()">🚪 Salir</button>
+    <button class="btn btn-gold" onclick="leaveRoom()"><span class="ico ico-exit"></span>Salir</button>
   </div>
 </div>
 
 <!-- Notifications -->
+<div id="allin-flash">ALL IN</div>
 <div id="notif-area"></div>
 
 <script src="/socket.io/socket.io.js"></script>
@@ -1294,6 +1333,7 @@ const state = {
   players: [],
   lastActionTime: 0,
   showdownActive: false,
+  lastHandLog: [],
   playerName: '',
   pendingDirectRoom: null,
   selectedExchangeCards: [],
@@ -1311,8 +1351,7 @@ window.visualViewport?.addEventListener('resize', setAppVh);
 setAppVh();
 
 // ============================================================ AVATARS
-const AVATARS = ['🦁','🐯','🦊','🐺','🐻','🐼','🦅','🦋','🐲','🦄','🐙','🦈','🎭','👑','🎩','🃏','💎','⚡','🔥','🌙'];
-function getAvatar(name) { return AVATARS[name.charCodeAt(0) % AVATARS.length]; }
+function getAvatar(name) { const n=String(name||'P').trim(); return `<span class="avatar-initial">${escHtml((n[0]||'P').toUpperCase())}</span>`; }
 
 // ============================================================ SEAT POSITIONS
 const seatLayouts = {
@@ -1479,7 +1518,7 @@ function filterRooms() {
   if (!grid) return;
 
   if (filtered.length === 0) {
-    grid.innerHTML = '<div class="no-rooms">🃏 No hay salas disponibles.<br>¡Crea la primera!</div>';
+    grid.innerHTML = '<div class="no-rooms">No hay salas disponibles.<br>Creá la primera mesa.</div>';
     return;
   }
 
@@ -1489,14 +1528,20 @@ function filterRooms() {
     const div = document.createElement('div');
     div.className = 'room-card';
     div.innerHTML = `
-      <div class="room-card-name">${escHtml(room.name)} ${room.hasPassword ? '🔒' : ''}<span class="room-mode-pill ${room.gameMode==='classic'?'mode-classic':'mode-texas'}">${mode}</span></div>
-      <div class="room-card-info">
-        <span>👥 ${room.players}/${room.maxPlayers}</span>
-        <span>💰 ${room.avgStack}</span>
-        <span>👁 ${room.spectators}</span>
-        <span class="room-badge ${room.started ? 'badge-playing' : 'badge-open'}">${room.started ? 'En juego' : 'Abierta'}</span>
+      <div class="room-card-main">
+        <div class="room-card-name">
+          <span>${escHtml(room.name)}</span>
+          ${room.hasPassword ? '<span class="room-lock">PRIVADA</span>' : '<span class="room-lock">PÚBLICA</span>'}
+          <span class="room-mode-pill ${room.gameMode==='classic'?'mode-classic':'mode-texas'}">${mode}</span>
+        </div>
+        <div class="room-card-info">
+          <span class="room-stat">${room.players}/${room.maxPlayers} jugadores</span>
+          <span class="room-stat">stack medio ${room.avgStack}</span>
+          <span class="room-stat">${room.spectators} espectadores</span>
+          <span class="room-badge ${room.started ? 'badge-playing' : 'badge-open'}">${room.started ? 'En juego' : 'Abierta'}</span>
+        </div>
       </div>
-      <button class="room-card-join" onclick="openJoinModal('${room.id}', ${room.hasPassword})">Unirse</button>
+      <button class="room-card-join" onclick="openJoinModal('${room.id}', ${room.hasPassword})">Entrar</button>
     `;
     grid.appendChild(div);
   });
@@ -1536,6 +1581,7 @@ function enterGame(roomId, isHost, isSpectator) {
 
   // Host UI
   document.getElementById('btn-host-panel').style.display = isHost ? 'inline-block' : 'none';
+  const inviteCode = document.getElementById('invite-room-code'); if(inviteCode) inviteCode.textContent = 'Código: ' + roomId;
 
   if (state.isSpectator) {
     document.getElementById('spectator-banner').style.display = 'block';
@@ -1549,13 +1595,14 @@ function renderGameState(gs) {
   state.myId = gs.myId;
   state.players = gs.players;
   state.isSpectator = gs.isSpectator;
+  state.lastHandLog = gs.lastHandLog || state.lastHandLog || [];
 
   document.getElementById('room-name-display').textContent = gs.roomName;
   document.getElementById('hand-badge').textContent = gs.gameState ? `Mano #${gs.gameState.handNumber}` : 'Sala';
 
   const phaseNames = { waiting:'Esperando', preflop:'Pre-Flop', flop:'Flop', turn:'Turn', river:'River', exchange:'Cambio de cartas', postexchange:'Apuestas finales', showdown:'Showdown' };
   const phase = gs.gameState?.phase || 'waiting';
-  document.getElementById('phase-text').textContent = phaseNames[phase] || phase;
+  document.getElementById('phase-text').textContent = gs.paused ? 'Pausado' : (phaseNames[phase] || phase);
 
   const phaseBadge = document.getElementById('phase-badge');
   if (gs.state === 'playing' && phase !== 'waiting') {
@@ -1613,7 +1660,7 @@ function renderWaitingRoom(gs) {
     div.className = 'waiting-player';
     div.innerHTML = `
       <div class="waiting-player-avatar">${getAvatar(p.name)}</div>
-      <div class="waiting-player-name">${escHtml(p.name)}${p.isHost ? '<span class="waiting-host-badge">👑</span>' : ''}</div>
+      <div class="waiting-player-name">${escHtml(p.name)}${p.isHost ? '<span class="waiting-host-badge">HOST</span>' : ''}</div>
     `;
     container.appendChild(div);
   });
@@ -1730,9 +1777,9 @@ function renderSeats(gs) {
     }
 
     let overlayHtml = '';
-    if (player.disconnected) overlayHtml = '<div class="disconnected-overlay">📡</div>';
-    if (player.eliminated) overlayHtml = '<div class="eliminated-overlay">💀</div>';
-    const hostCrown = player.isHost ? '<div class="host-crown">👑</div>' : '';
+    if (player.disconnected) overlayHtml = '<div class="disconnected-overlay"></div>';
+    if (player.eliminated) overlayHtml = '<div class="eliminated-overlay"></div>';
+    const hostCrown = player.isHost ? '<div class="host-crown"></div>' : '';
 
     seat.innerHTML = `
       ${cardsHtml}
@@ -1764,7 +1811,7 @@ function renderMyActions(gs) {
 
   if (myP && !gs.isSpectator && myP.cards?.length) {
     controls.style.display = 'flex';
-    stackPill.textContent = `💰 ${formatChips(myP.stack)} fichas`;
+    stackPill.innerHTML = `<span class="ico ico-chip"></span>${formatChips(myP.stack)} fichas`;
   } else {
     controls.style.display = 'none';
   }
@@ -1823,7 +1870,7 @@ function renderReviveRequest(gs) {
   const active = gs.players.filter(p=>!p.eliminated&&!p.disconnected&&p.stack>0);
   const yeses = active.filter(p=>revReq.votes[p.id]===true).length;
   const nos = active.filter(p=>revReq.votes[p.id]===false).length;
-  document.getElementById('revive-vote-count').textContent = `✅ ${yeses}  ❌ ${nos}`;
+  document.getElementById('revive-vote-count').textContent = `Sí ${yeses}  /  No ${nos}`;
 
   // Hide if already voted
   if (revReq.votes[gs.myId] !== undefined) {
@@ -1844,25 +1891,25 @@ function renderPlayersList(gs) {
     div.className = 'player-list-item';
 
     const badges = [];
-    if (p.isHost) badges.push('<span class="player-list-badge badge-host">👑 Host</span>');
-    if (p.eliminated || p.status === 'busted') badges.push('<span class="player-list-badge badge-eliminated">💀 Sin fichas</span>');
-    if (p.disconnected) badges.push('<span class="player-list-badge badge-disconnected">📡 Desconectado</span>');
-    if (p.allIn) badges.push('<span class="player-list-badge badge-allin">💥 All-In</span>');
+    if (p.isHost) badges.push('<span class="player-list-badge badge-host">Host</span>');
+    if (p.eliminated || p.status === 'busted') badges.push('<span class="player-list-badge badge-eliminated">SIN FICHAS</span>');
+    if (p.disconnected) badges.push('<span class="player-list-badge badge-disconnected">OFFLINE</span>');
+    if (p.allIn) badges.push('<span class="player-list-badge badge-allin">ALL-IN</span>');
     if (p.folded && !p.eliminated) badges.push('<span class="player-list-badge badge-folded">Fold</span>');
-    if (p.spectator) badges.push('<span class="player-list-badge" style="background:rgba(100,100,100,0.2);color:#aaa">👁 Espectador</span>');
-    if (p.waitingNextHand) badges.push('<span class="player-list-badge" style="background:rgba(201,168,76,0.16);color:var(--gold2)">⏳ Próxima mano</span>');
+    if (p.spectator) badges.push('<span class="player-list-badge" style="background:rgba(100,100,100,0.2);color:#aaa">ESPECTADOR</span>');
+    if (p.waitingNextHand) badges.push('<span class="player-list-badge" style="background:rgba(201,168,76,0.16);color:var(--gold2)">PRÓXIMA MANO</span>');
 
     let actionBtns = '';
     if (state.isHost && p.id !== gs.myId && !p.spectator) {
       actionBtns = `
         <div class="player-list-actions">
-          <button class="pl-action-btn pl-chips" onclick="openAddChips('${p.id}','${escHtml(p.name)}')">💰</button>
+          <button class="pl-action-btn pl-chips" onclick="openAddChips('${p.id}','${escHtml(p.name)}')"><span class="ico ico-chip"></span></button>
           <button class="pl-action-btn pl-kick" onclick="hostKick('${p.id}')">Kick</button>
           <button class="pl-action-btn pl-ban" onclick="hostBan('${p.id}')">Ban</button>
         </div>
       `;
     } else if (state.isHost && p.id === gs.myId) {
-      actionBtns = `<div class="player-list-actions"><button class="pl-action-btn pl-chips" onclick="openAddChips('${p.id}','${escHtml(p.name)}')">💰</button></div>`;
+      actionBtns = `<div class="player-list-actions"><button class="pl-action-btn pl-chips" onclick="openAddChips('${p.id}','${escHtml(p.name)}')"><span class="ico ico-chip"></span></button></div>`;
     }
 
     div.innerHTML = `
@@ -2082,6 +2129,7 @@ function setRaisePreset(type) {
 function startGame() {
   socket.emit('startGame');
 }
+function togglePauseGame(){ socket.emit('togglePause'); }
 
 // ============================================================ HOST ACTIONS
 function toggleHostPanel() {
@@ -2139,7 +2187,7 @@ function endGame() {
 // ============================================================ HIDE CARDS
 function updateHideCardsButton() {
   const btn = document.getElementById('btn-hide-cards');
-  if (btn) btn.textContent = state.hideCards ? '👁 Mostrar cartas' : '🙈 Ocultar cartas';
+  if (btn) btn.textContent = state.hideCards ? 'Mostrar cartas' : 'Ocultar cartas';
 }
 function toggleHideCards() {
   state.hideCards = !state.hideCards;
@@ -2241,21 +2289,40 @@ function renderShowdown(data) {
   const winners = document.getElementById('showdown-winners');
   winners.innerHTML = '';
 
-  data.winners.forEach(w => {
+  const grid = document.createElement('div');
+  grid.className = 'showdown-grid';
+
+  (data.winners || []).forEach(w => {
     const div = document.createElement('div');
     div.className = 'showdown-winner';
     let cardsHtml = '';
-    if (w.cards) {
+    if (w.cards && w.cards.length) {
       cardsHtml = '<div class="win-cards">';
       w.cards.forEach(c => { cardsHtml += buildCard(c,false).outerHTML; });
       cardsHtml += '</div>';
     }
-    div.innerHTML = `🏆 <strong>${escHtml(w.name)}</strong> gana ${formatChips(w.amount)} ${w.hand ? `con ${w.hand}` : ''} ${cardsHtml}`;
-    winners.appendChild(div);
+    div.innerHTML = `<strong>${escHtml(w.name)}</strong> ganó ${formatChips(w.amount)} fichas<div class="showdown-handline">${w.hand ? escHtml(w.hand) : 'Ganó sin mostrar'}</div>${cardsHtml}`;
+    grid.appendChild(div);
   });
 
+  if (data.players && data.players.length) {
+    const all = document.createElement('div');
+    all.className = 'showdown-allplayers';
+    data.players.forEach(p => {
+      const row = document.createElement('div');
+      row.className = 'showdown-player-row';
+      let cards = '<div class="showdown-player-cards">';
+      (p.cards || []).forEach(c => { cards += buildCard(c,false).outerHTML; });
+      cards += '</div>';
+      row.innerHTML = `<span><strong>${escHtml(p.name)}</strong><br><span class="showdown-handline">${escHtml(p.hand || '-')}</span></span>${cards}`;
+      all.appendChild(row);
+    });
+    grid.appendChild(all);
+  }
+
+  winners.appendChild(grid);
   overlay.classList.add('active');
-  setTimeout(() => { if(state.showdownActive) closeShowdown(); }, 5000);
+  setTimeout(() => { if(state.showdownActive) closeShowdown(); }, 7500);
 }
 
 function closeShowdown() {
@@ -2278,10 +2345,36 @@ function addChatMessage(msg) {
   }
 
   container.appendChild(div);
+  if (msg.type === 'allin') showAllInFlash();
+  if (msg.type === 'emote' && msg.playerId) showSeatEmote(msg.playerId, msg.text);
   container.scrollTop = container.scrollHeight;
 
   // Keep max 100 messages
   while (container.children.length > 100) container.removeChild(container.firstChild);
+}
+
+function showHandHistory(){
+  const box = document.getElementById('hand-history-box');
+  const msgs = document.getElementById('chat-messages');
+  if(!box || !msgs) return;
+  const opening = !box.classList.contains('active');
+  box.classList.toggle('active', opening);
+  msgs.style.display = opening ? 'none' : 'block';
+  box.innerHTML = (state.lastHandLog && state.lastHandLog.length)
+    ? state.lastHandLog.map(x=>`<div class="history-line">${escHtml(x.text || x)}</div>`).join('')
+    : '<div class="history-line">Todavía no hay una mano anterior.</div>';
+}
+function sendEmote(label){
+  socket.emit('emote', { label });
+}
+function showAllInFlash(){
+  const el=document.getElementById('allin-flash'); if(!el) return;
+  el.classList.remove('active'); void el.offsetWidth; el.classList.add('active');
+}
+function showSeatEmote(playerId,label){
+  const seat=document.getElementById('seat-'+playerId); if(!seat) return;
+  const pop=document.createElement('div'); pop.className='emote-pop'; pop.textContent=label;
+  seat.appendChild(pop); setTimeout(()=>pop.remove(),2000);
 }
 
 function sendChat() {
@@ -2360,7 +2453,7 @@ function toggleAudioEnabled(){
 }
 function updateAudioButton(){
   const btn=document.getElementById('btn-audio');
-  if(btn) btn.textContent = state.audio.enabled ? '🔊 Audio' : '🔇 Audio';
+  if(btn) btn.innerHTML = '<span class="ico ico-audio"></span>Audio';
   for (const c of audioControls()) if(c.t) c.t.textContent = state.audio.enabled ? 'Desactivar' : 'Activar';
 }
 function musicTargetVolume(){ return Math.max(0, Math.min(1, (state.audio.musicVolume||0)/100)); }
@@ -2547,6 +2640,8 @@ socket.on('showdown', (data) => {
   playSfx('win');
 });
 
+socket.on('emote', (msg) => { addChatMessage(msg); playSfx('chat'); });
+
 socket.on('chatMessage', (msg) => {
   addChatMessage(msg);
   if (msg.system) playSfx(msg.type === 'error' ? 'error' : (msg.type === 'revive' ? 'revive' : 'chip'));
@@ -2555,14 +2650,14 @@ socket.on('chatMessage', (msg) => {
 
 socket.on('eliminated', () => {
   state.isEliminated = true;
-  showNotif('💀 Quedaste sin fichas. Podés pedir revivir.', 'warning');
+  showNotif('Quedaste sin fichas. Podés pedir revivir.', 'warning');
   playSfx('error');
   clearTimer();
 });
 
 socket.on('revived', (data) => {
   state.isEliminated = false;
-  showNotif(`✅ ¡Reviviste con ${data.stack} fichas!`, 'success');
+  showNotif(`Reviviste con ${data.stack} fichas.`, 'success');
   playSfx('revive');
 });
 
@@ -2582,7 +2677,7 @@ socket.on('gameEnded', (data) => {
 });
 
 socket.on('gameOver', (data) => {
-  document.getElementById('gameover-winner').textContent = `🏆 ${data.winner} es el campeón!`;
+  document.getElementById('gameover-winner').textContent = `${data.winner} es el campeón!`;
   document.getElementById('gameover-overlay').classList.add('active');
   clearTimer();
   setTimeout(()=>leaveRoom(true), 2400);
