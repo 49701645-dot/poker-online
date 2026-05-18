@@ -887,6 +887,22 @@ body.sidebar-hidden #game-sidebar.mobile-open{display:none!important;opacity:0!i
 .react-icon{width:36px;height:36px;border-radius:50%;position:relative;display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(245,210,122,.45);background:radial-gradient(circle at 35% 25%,rgba(245,210,122,.45),rgba(201,168,76,.12) 36%,rgba(0,0,0,.35));box-shadow:0 0 16px rgba(201,168,76,.18);overflow:hidden}.react-icon::before,.react-icon::after{content:'';position:absolute}.rx-farol::before{width:48%;height:48%;border-radius:50%;border:2px solid #f5d27a;animation:rxPulse 1.2s infinite}.rx-buena::before{width:56%;height:34%;border-left:3px solid #f5d27a;border-bottom:3px solid #f5d27a;transform:rotate(-45deg);animation:rxPop 1s infinite}.rx-fuego::before{width:42%;height:58%;background:#f5d27a;clip-path:polygon(50% 0,72% 28%,95% 58%,70% 100%,30% 100%,8% 58%,36% 30%);animation:rxFlicker .8s infinite alternate}.rx-ficha::before{width:66%;height:66%;border-radius:50%;border:4px dotted #f5d27a;animation:rxSpin 1.6s linear infinite}.rx-rey::before{width:62%;height:40%;bottom:9px;background:#f5d27a;clip-path:polygon(0 100%,0 30%,24% 58%,50% 0,76% 58%,100% 30%,100% 100%);animation:rxPop 1.4s infinite}.rx-risa::before{width:58%;height:30%;border-bottom:3px solid #f5d27a;border-radius:0 0 50% 50%;animation:rxBounce 1s infinite}.rx-sombra::before{width:58%;height:58%;border-radius:50%;background:#f5d27a}.rx-sombra::after{width:54%;height:54%;border-radius:50%;background:#07120d;transform:translateX(7px);animation:rxSlide 1.4s infinite}.rx-golpe::before{width:64%;height:64%;border:2px solid #f5d27a;clip-path:polygon(50% 0,61% 35%,98% 35%,68% 55%,80% 92%,50% 70%,20% 92%,32% 55%,2% 35%,39% 35%);animation:rxImpact .85s infinite}.emote-pop{min-width:76px;min-height:56px;border-radius:18px;background:rgba(7,18,13,.94);border:1px solid rgba(245,210,122,.55);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--gold2)}.emote-pop .react-icon{transform:scale(.9)}.emote-pop .react-label{font-size:.62rem;font-weight:1000;letter-spacing:.08em}@keyframes rxPulse{50%{transform:scale(1.18);opacity:.65}}@keyframes rxPop{50%{transform:scale(1.12) rotate(var(--r,0deg))}}@keyframes rxFlicker{to{transform:scale(1.08) rotate(-5deg);opacity:.75}}@keyframes rxSpin{to{transform:rotate(360deg)}}@keyframes rxBounce{50%{transform:translateY(4px)}}@keyframes rxSlide{50%{transform:translateX(-3px)}}@keyframes rxImpact{50%{transform:scale(1.18);filter:brightness(1.4)}}
 @media(max-width:520px){.choice-grid{grid-template-columns:repeat(2,1fr)}.emote-bar.profile-emotes{grid-template-columns:repeat(2,1fr)}#btn-hide-cards{min-width:96px;font-size:.72rem}#my-stack-pill{min-width:96px}}
 
+/* ---- REAL ASSET AVATARS / REACTION STICKERS ---- */
+.asset-avatar{width:100%;height:100%;display:block;object-fit:cover;border-radius:50%;border:0;box-shadow:none;background:transparent;}
+.avatar-choice .asset-avatar{width:66px;height:66px;border-radius:50%;filter:drop-shadow(0 8px 16px rgba(0,0,0,.42));}
+.profile-preview .asset-avatar{width:58px;height:58px;}
+.player-list-avatar .asset-avatar,.waiting-player-avatar .asset-avatar,.seat-avatar .asset-avatar{width:100%;height:100%;}
+.react-icon.react-sticker{width:62px;height:54px;border:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible;}
+.react-icon.react-sticker::before,.react-icon.react-sticker::after{display:none!important;}
+.react-icon.react-sticker img{width:100%;height:100%;object-fit:contain;display:block;filter:drop-shadow(0 8px 12px rgba(0,0,0,.45));}
+.reaction-choice .react-icon.react-sticker{width:92px;height:72px;margin-bottom:2px;}
+.emote-btn .react-icon.react-sticker{width:58px;height:44px;margin:0 auto 3px;}
+.emote-pop{min-width:112px;min-height:92px;background:rgba(7,18,13,.9);border:1px solid rgba(245,210,122,.42);box-shadow:0 16px 40px rgba(0,0,0,.55);}
+.emote-pop .react-icon.react-sticker{width:104px;height:78px;transform:none;}
+.emote-pop .react-label{display:none;}
+@media(max-width:520px){.reaction-choice .react-icon.react-sticker{width:78px;height:62px}.emote-btn .react-icon.react-sticker{width:50px;height:40px}.emote-pop .react-icon.react-sticker{width:88px;height:68px}}
+
+
 </style>
 </head>
 <body>
@@ -1398,12 +1414,12 @@ const AVATAR_OPTIONS = [
   {id:'initial', name:'Inicial'},
   {id:'orion', name:'Orion'},
   {id:'onyx', name:'Onyx'},
-  {id:'goldfox', name:'Zorro'},
   {id:'velvet', name:'Velvet'},
-  {id:'crown', name:'Corona'},
-  {id:'eclipse', name:'Eclipse'},
-  {id:'delta', name:'Delta'},
-  {id:'ace', name:'As'}
+  {id:'blanca', name:'Blanca'},
+  {id:'verde', name:'Verde'},
+  {id:'roja', name:'Roja'},
+  {id:'senior', name:'Senior'},
+  {id:'noche', name:'Noche'}
 ];
 const REACTION_OPTIONS = [
   {id:'farol', label:'FAROL'},
@@ -1455,13 +1471,15 @@ function getJoinProfile(){
 }
 function renderAvatar(id, name){
   const initial = escHtml(((name||'P').trim()[0]||'P').toUpperCase());
-  if (!id || id === 'initial') return `<span class="avatar-initial">${initial}</span>`;
-  return `<span class="avatar-art av-${escHtml(id)}" aria-label="${escHtml(avatarById(id).name)}"></span>`;
+  const safeId = avatarById(id).id;
+  if (!safeId || safeId === 'initial') return `<span class="avatar-initial">${initial}</span>`;
+  const safeName = escHtml(avatarById(safeId).name);
+  return `<img class="avatar-art asset-avatar" src="assets/avatars/${escHtml(safeId)}.png" alt="${safeName}" loading="lazy" draggable="false">`;
 }
 function getAvatar(name, avatarId) { return renderAvatar(avatarId, name); }
 function renderReactionIcon(id){
   const em = reactionById(id);
-  return `<span class="react-icon rx-${escHtml(em.id)}"></span>`;
+  return `<span class="react-icon react-sticker"><img src="assets/reactions/${escHtml(em.id)}.png" alt="${escHtml(em.label)}" loading="lazy" draggable="false"></span>`;
 }
 function openProfileModal(){
   const profile = getStoredProfile();
