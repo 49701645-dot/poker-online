@@ -203,10 +203,13 @@ function createRoom(id, name, hostId, hostName, password, maxPlayers, startingSt
   };
 }
 
-function createPlayer(socketId, name, stack) {
+function createPlayer(socketId, name, stack, profile={}) {
+  const safeProfile = sanitizeProfile(profile);
   return {
     id: socketId,
     name: sanitize(name),
+    avatarId: safeProfile.avatarId,
+    emotes: safeProfile.emotes,
     stack, bet: 0, totalBet: 0,
     cards: [],
     folded: false, allIn: false,
@@ -227,6 +230,19 @@ function sanitize(str) {
 function sanitizeMsg(str) {
   if (typeof str !== 'string') return '';
   return str.replace(/</g,'&lt;').replace(/>/g,'&gt;').trim().slice(0, MAX_MSG_LEN);
+}
+
+
+const ALLOWED_AVATARS = new Set(['initial','orion','onyx','goldfox','velvet','crown','eclipse','delta','ace']);
+const ALLOWED_EMOTES = new Map([
+  ['farol','FAROL'], ['buena','BUENA'], ['fuego','FUEGO'], ['ficha','FICHA'],
+  ['rey','REY'], ['risa','RISA'], ['sombra','SOMBRA'], ['golpe','GOLPE']
+]);
+function sanitizeProfile(profile) {
+  const raw = profile && typeof profile === 'object' ? profile : {};
+  const avatarId = ALLOWED_AVATARS.has(raw.avatarId) ? raw.avatarId : 'initial';
+  const emotes = Array.isArray(raw.emotes) ? raw.emotes.filter(id => ALLOWED_EMOTES.has(id)).slice(0,4) : ['farol','buena','fuego','ficha'];
+  return { avatarId, emotes: emotes.length ? emotes : ['farol','buena','fuego','ficha'] };
 }
 
 function validateNumber(val, min, max) {
@@ -321,7 +337,7 @@ function buildGameStateFor(room, socketId, isSpectator=false) {
     else if (p.waitingNextHand) status = 'waiting';
 
     return {
-      id: p.id, name: p.name,
+      id: p.id, name: p.name, avatarId: p.avatarId || 'initial', emotes: p.emotes || [],
       stack: p.stack, bet: p.bet, totalBet: p.totalBet,
       cards,
       folded: p.folded, allIn: p.allIn,
@@ -359,7 +375,7 @@ function buildGameStateFor(room, socketId, isSpectator=false) {
     paused: !!room.paused,
     lastHandLog: room.lastHandLog || [],
     players,
-    spectators: room.spectators.map(s=>({id:s.id,name:s.name})),
+    spectators: room.spectators.map(s=>({id:s.id,name:s.name,avatarId:s.avatarId||'initial'})),
     myId: socketId, isSpectator,
     gameState: gsData
   };
@@ -425,7 +441,7 @@ function startGame(room) {
     p.hasExchanged = false; p.cardsSelected = [];
   }
 
-  emitLog(room, `🃏 ¡Partida iniciada! Modo: ${room.gameMode === 'classic' ? 'Póker Clásico (5 cartas)' : 'Texas Hold\'em'}`, 'success');
+  emitLog(room, `Partida iniciada: Modo: ${room.gameMode === 'classic' ? 'Póker Clásico (5 cartas)' : 'Texas Hold\'em'}`, 'success');
   startNewHand(room);
   broadcastRoomList();
 }
@@ -455,7 +471,7 @@ function startNewHand(room) {
     if (room.hasStarted) {
       const busted = room.players.filter(p => p.eliminated && !p.disconnected && room.settings.allowRevive);
       if (busted.length > 0 && active.length >= 1) {
-        emitLog(room, `⏸️ Esperando posibles solicitudes de revive...`, 'warning');
+        emitLog(room, `Esperando posibles solicitudes de revive...`, 'warning');
         gs.phase = 'showdown';
         emitRoomState(room);
         return;
@@ -466,7 +482,7 @@ function startNewHand(room) {
       setTimeout(() => { if (rooms.has(room.id)) closeRoom(room, msg); }, 1500);
     } else {
       room.state = 'waiting';
-      emitLog(room, '⏸️ Esperando jugadores...', 'warning');
+      emitLog(room, 'Esperando jugadores...', 'warning');
       emitRoomState(room);
       broadcastRoomList();
     }
@@ -525,7 +541,7 @@ function startNewHand(room) {
   const utg = nActive === 2 ? sbIdx : getNextActiveIndex(room, bbIdx);
   gs.currentPlayerIndex = utg;
 
-  emitLog(room, `🃏 Mano #${gs.handNumber} | Dealer: ${room.players[gs.dealerIndex]?.name} | SB: ${sbPlayer?.name} (${gs.smallBlind}) | BB: ${bbPlayer?.name} (${gs.bigBlind})`, 'info');
+  emitLog(room, `Mano #${gs.handNumber} | Dealer: ${room.players[gs.dealerIndex]?.name} | SB: ${sbPlayer?.name} (${gs.smallBlind}) | BB: ${bbPlayer?.name} (${gs.bigBlind})`, 'info');
   emitRoomState(room);
   startTurnTimer(room);
 }
@@ -620,13 +636,13 @@ function handleAction(room, socketId, action, amount) {
   switch (action) {
     case 'fold':
       player.folded = true;
-      emitLog(room, `🃏 ${player.name} se fue al fold.`, 'fold');
+      emitLog(room, `${player.name} se fue al fold.`, 'fold');
       valid = true;
       break;
 
     case 'check':
       if (callAmount !== 0) return false;
-      emitLog(room, `✅ ${player.name} checkeó.`, 'check');
+      emitLog(room, `${player.name} checkeó.`, 'check');
       valid = true;
       break;
 
@@ -744,17 +760,17 @@ function advancePhase(room) {
     case 'preflop':
       gs.phase = 'flop';
       gs.communityCards.push(gs.deck.pop(), gs.deck.pop(), gs.deck.pop());
-      emitLog(room, `🃏 FLOP: ${gs.communityCards.join(' ')}`, 'phase');
+      emitLog(room, `FLOP: ${gs.communityCards.join(' ')}`, 'phase');
       break;
     case 'flop':
       gs.phase = 'turn';
       gs.communityCards.push(gs.deck.pop());
-      emitLog(room, `🃏 TURN: ${gs.communityCards[3]}`, 'phase');
+      emitLog(room, `TURN: ${gs.communityCards[3]}`, 'phase');
       break;
     case 'turn':
       gs.phase = 'river';
       gs.communityCards.push(gs.deck.pop());
-      emitLog(room, `🃏 RIVER: ${gs.communityCards[4]}`, 'phase');
+      emitLog(room, `RIVER: ${gs.communityCards[4]}`, 'phase');
       break;
     case 'river':
       endHand(room); return;
@@ -811,7 +827,7 @@ function proceedExchange(room) {
 
     const firstActor = getNextActiveIndex(room, gs.dealerIndex);
     gs.currentPlayerIndex = firstActor;
-    emitLog(room, '🃏 Segunda ronda de apuestas.', 'phase');
+    emitLog(room, 'Segunda ronda de apuestas.', 'phase');
     emitRoomState(room);
     startTurnTimer(room);
     return;
@@ -1051,7 +1067,7 @@ function resolveReviveVote(room, timeout, autoApprove=false) {
   gs.reviveRequest = null;
 
   if (timeout) {
-    emitLog(room, `❌ Votación expiró. ${req.playerName} no revivió.`, 'info');
+    emitLog(room, `No aprobado: Votación expiró. ${req.playerName} no revivió.`, 'info');
     emitRoomState(room);
     return;
   }
@@ -1074,7 +1090,7 @@ function resolveReviveVote(room, timeout, autoApprove=false) {
       player.waitingNextHand = true;
       player.cards = [];
       room.spectators = room.spectators.filter(s => s.id !== player.id);
-      emitLog(room, `✅ ${player.name} revivió con ${revStack} fichas! Jugará la próxima mano.`, 'revive');
+      emitLog(room, `${player.name} revivió con ${revStack} fichas! Jugará la próxima mano.`, 'revive');
       io.to(player.id).emit('revived', { stack: revStack });
 
       // If game was paused, restart
@@ -1083,7 +1099,7 @@ function resolveReviveVote(room, timeout, autoApprove=false) {
       }
     }
   } else {
-    emitLog(room, `❌ ${req.playerName} no obtuvo suficientes votos para revivir.`, 'info');
+    emitLog(room, `No aprobado: ${req.playerName} no obtuvo suficientes votos para revivir.`, 'info');
   }
 
   emitRoomState(room);
@@ -1191,7 +1207,7 @@ function updateSettings(room, hostSocketId, settings) {
   if (revStack !== null) s.reviveStack = revStack;
   const maxCC = validateNumber(settings.maxCardsChange, 0, 5);
   if (maxCC !== null) s.maxCardsChange = maxCC;
-  emitLog(room, '⚙️ Configuración actualizada.', 'info');
+  emitLog(room, 'Configuración actualizada.', 'info');
   emitRoomState(room);
   return true;
 }
@@ -1369,7 +1385,7 @@ io.on('connection', (socket) => {
       if (data.settings && typeof data.settings === 'object') {
         updateSettings(room, socket.id, data.settings);
       }
-      const player = createPlayer(socket.id, playerName, room.startingStack);
+      const player = createPlayer(socket.id, playerName, room.startingStack, data.profile);
       player.seatIndex = 0;
       room.players.push(player);
       rooms.set(roomId, room);
@@ -1408,6 +1424,9 @@ io.on('connection', (socket) => {
         }
         disconnectedPlayer.id = socket.id;
         disconnectedPlayer.disconnected = false;
+        const safeProfile = sanitizeProfile(data.profile);
+        disconnectedPlayer.avatarId = safeProfile.avatarId;
+        disconnectedPlayer.emotes = safeProfile.emotes;
         if (room.hostSocketId === oldId) room.hostSocketId = socket.id;
         socketToRoom.delete(oldId);
         socketToPlayer.delete(oldId);
@@ -1428,7 +1447,7 @@ io.on('connection', (socket) => {
         if (!room.settings.allowSpectators) {
           return socket.emit('error', { msg: 'Sala llena.' });
         }
-        room.spectators.push({ id: socket.id, name: playerName, lastChat: 0 });
+        { const safeProfile = sanitizeProfile(data.profile); room.spectators.push({ id: socket.id, name: playerName, avatarId: safeProfile.avatarId, emotes: safeProfile.emotes, lastChat: 0 }); }
         socketToRoom.set(socket.id, room.id);
         socket.join(room.id);
         socket.emit('roomJoined', { roomId: room.id, isHost: false, isSpectator: true, gameMode: room.gameMode });
@@ -1442,7 +1461,7 @@ io.on('connection', (socket) => {
         return socket.emit('error', { msg: 'Sala llena.' });
       }
 
-      const player = createPlayer(socket.id, playerName, room.startingStack);
+      const player = createPlayer(socket.id, playerName, room.startingStack, data.profile);
       player.seatIndex = room.players.length;
       if (room.state === 'playing') { player.waitingNextHand = true; player.folded = true; }
       room.players.push(player);
@@ -1451,8 +1470,8 @@ io.on('connection', (socket) => {
       socket.join(room.id);
       socket.emit('roomJoined', { roomId: room.id, isHost: false, gameMode: room.gameMode });
       emitLog(room, room.state === 'playing'
-        ? `⏳ ${playerName} se unió y jugará desde la próxima mano.`
-        : `✅ ${playerName} se unió a la sala.`, 'join');
+        ? `${playerName} se unió y jugará desde la próxima mano.`
+        : `${playerName} se unió a la sala.`, 'join');
       emitRoomState(room);
       broadcastRoomList();
     } catch(e) { socket.emit('error', { msg: 'Error al unirse.' }); }
@@ -1488,12 +1507,13 @@ io.on('connection', (socket) => {
   socket.on('emote', (data) => {
     const room = getPlayerRoom(socket.id);
     if (!room) return;
-    const allowed = new Set(['BLUFF','NICE','WOW','ALL IN','GG']);
-    const label = String(data?.label || '').toUpperCase().slice(0, 12);
-    if (!allowed.has(label)) return;
     const entity = room.players.find(p=>p.id===socket.id) || room.spectators.find(s=>s.id===socket.id);
     if (!entity) return;
-    io.to(room.id).emit('emote', { system: true, type: 'emote', playerId: socket.id, name: entity.name, text: label, ts: Date.now() });
+    const emoteId = String(data?.emoteId || '').toLowerCase().slice(0, 20);
+    const equipped = Array.isArray(entity.emotes) ? entity.emotes : [];
+    if (!ALLOWED_EMOTES.has(emoteId) || (equipped.length && !equipped.includes(emoteId))) return;
+    const label = ALLOWED_EMOTES.get(emoteId);
+    io.to(room.id).emit('emote', { system: true, type: 'emote', playerId: socket.id, name: entity.name, emoteId, text: label, ts: Date.now() });
   });
 
   socket.on('togglePause', () => {
@@ -1598,6 +1618,6 @@ function getPlayerName(socketId, room) {
 // ============================================================
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-  console.log(`🃏 Royal Poker Server running on port ${PORT}`);
+  console.log(`Royal Poker Server running on port ${PORT}`);
   console.log(`   → http://localhost:${PORT}`);
 });
