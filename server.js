@@ -196,7 +196,10 @@ function createRoom(id, name, hostId, hostName, password, maxPlayers, startingSt
       compactMode: false,
       reducedAnimations: false,
       audioEnabled: false
-    }
+    },
+    paused: false,
+    handLog: [],
+    lastHandLog: []
   };
 }
 
@@ -353,6 +356,8 @@ function buildGameStateFor(room, socketId, isSpectator=false) {
     state: room.state,
     gameMode: room.gameMode || 'texas',
     settings: room.settings,
+    paused: !!room.paused,
+    lastHandLog: room.lastHandLog || [],
     players,
     spectators: room.spectators.map(s=>({id:s.id,name:s.name})),
     myId: socketId, isSpectator,
@@ -360,8 +365,18 @@ function buildGameStateFor(room, socketId, isSpectator=false) {
   };
 }
 
+function cleanUiText(msg) {
+  return String(msg || '').replace(/\s{2,}/g, ' ').trim();
+}
 function emitLog(room, msg, type='info') {
-  io.to(room.id).emit('chatMessage', { system: true, text: msg, type, ts: Date.now() });
+  const text = cleanUiText(msg);
+  const payload = { system: true, text, type, ts: Date.now() };
+  if (room) {
+    room.handLog = room.handLog || [];
+    room.handLog.push({ text, type, ts: payload.ts });
+    if (room.handLog.length > 80) room.handLog.shift();
+  }
+  io.to(room.id).emit('chatMessage', payload);
 }
 
 // ============================================================
@@ -416,6 +431,9 @@ function startGame(room) {
 }
 
 function startNewHand(room) {
+  if (room.handLog && room.handLog.length) room.lastHandLog = room.handLog.slice(-80);
+  room.handLog = [];
+  room.paused = false;
   const gs = room.gameState;
   for (const p of room.players) {
     if (p.stack > 0 && !p.eliminated) p.waitingNextHand = false;
@@ -443,7 +461,7 @@ function startNewHand(room) {
         return;
       }
       const winner = active[0]?.name;
-      const msg = winner ? `🏆 ${winner} gana la partida. La sala se cerrará.` : 'La partida terminó. La sala se cerrará.';
+      const msg = winner ? `${winner} gana la partida. La sala se cerrará.` : 'La partida terminó. La sala se cerrará.';
       emitLog(room, msg, 'champion');
       setTimeout(() => { if (rooms.has(room.id)) closeRoom(room, msg); }, 1500);
     } else {
@@ -581,6 +599,7 @@ function clearTurnTimer(room) {
 function handleAction(room, socketId, action, amount) {
   const gs = room.gameState;
   if (!gs) return false;
+  if (room.paused) return false;
   if (gs.phase === 'exchange') return handleExchangeAction(room, socketId, 'exchange', []);
   if (gs.phase === 'waiting' || gs.phase === 'showdown') return false;
 
@@ -618,9 +637,9 @@ function handleAction(room, socketId, action, amount) {
       player.stack -= actual; gs.pot += actual;
       if (player.stack === 0) {
         player.allIn = true;
-        emitLog(room, `💥 ${player.name} va ALL-IN con ${player.totalBet}!`, 'allin');
+        emitLog(room, `${player.name} va ALL-IN con ${player.totalBet}!`, 'allin');
       } else {
-        emitLog(room, `📞 ${player.name} llamó ${actual}.`, 'call');
+        emitLog(room, `${player.name} llamó ${actual}.`, 'call');
       }
       valid = true;
       break;
@@ -642,7 +661,7 @@ function handleAction(room, socketId, action, amount) {
 
       if (player.stack === 0) {
         player.allIn = true;
-        emitLog(room, `💥 ${player.name} va ALL-IN con ${player.totalBet}!`, 'allin');
+        emitLog(room, `${player.name} va ALL-IN con ${player.totalBet}!`, 'allin');
       } else {
         emitLog(room, `⬆️ ${player.name} subió a ${gs.currentBet}.`, 'raise');
       }
@@ -661,7 +680,7 @@ function handleAction(room, socketId, action, amount) {
       }
       player.bet += allInAmount; player.totalBet += allInAmount;
       gs.pot += allInAmount; player.stack = 0; player.allIn = true;
-      emitLog(room, `💥 ${player.name} va ALL-IN con ${player.totalBet}!`, 'allin');
+      emitLog(room, `${player.name} va ALL-IN con ${player.totalBet}!`, 'allin');
       valid = true;
       break;
     }
@@ -778,7 +797,7 @@ function startExchangePhase(room) {
 
   for (const p of room.players) { p.cardsSelected = []; p.hasExchanged = false; }
 
-  emitLog(room, `🔄 Fase de cambio. Máximo ${room.settings.maxCardsChange} carta(s) por jugador.`, 'phase');
+  emitLog(room, `Fase de cambio. Máximo ${room.settings.maxCardsChange} carta(s) por jugador.`, 'phase');
   proceedExchange(room);
 }
 
@@ -831,9 +850,9 @@ function handleExchangeAction(room, socketId, action, cardIndices) {
   player.hasExchanged = true;
 
   if (indices.length === 0) {
-    emitLog(room, `🤚 ${player.name} no cambió cartas.`, 'info');
+    emitLog(room, `${player.name} no cambió cartas.`, 'info');
   } else {
-    emitLog(room, `🔄 ${player.name} cambió ${indices.length} carta(s).`, 'info');
+    emitLog(room, `${player.name} cambió ${indices.length} carta(s).`, 'info');
   }
 
   gs.exchangeIndex++;
@@ -884,7 +903,7 @@ function endHand(room) {
 
   if (active.length === 1) {
     active[0].stack += gs.pot;
-    emitLog(room, `🏆 ${active[0].name} gana ${gs.pot} fichas sin mostrar.`, 'win');
+    emitLog(room, `${active[0].name} gana ${gs.pot} fichas sin mostrar.`, 'win');
     winners = [{ player: active[0], amount: gs.pot }];
   } else {
     const sidePots = calculateSidePots(room);
@@ -907,7 +926,7 @@ function endHand(room) {
         const winAmt = share + (i === 0 ? rem : 0);
         r.player.stack += winAmt;
         winners.push({ player: r.player, amount: winAmt, hand: handName(r.hand.score), cards: r.hand.cards });
-        emitLog(room, `🏆 ${r.player.name} gana ${winAmt} con ${handName(r.hand.score)}!`, 'win');
+        emitLog(room, `${r.player.name} gana ${winAmt} con ${handName(r.hand.score)}!`, 'win');
       });
     }
   }
@@ -937,7 +956,7 @@ function endHand(room) {
         p.allIn = false;
         p.cards = [];
         p.waitingNextHand = true;
-        emitLog(room, `💀 ${p.name} quedó sin fichas. Puede mirar y pedir revive.`, 'eliminate');
+        emitLog(room, `${p.name} quedó sin fichas. Puede mirar y pedir revive.`, 'eliminate');
         io.to(p.id).emit('eliminated');
       }
     }
@@ -952,7 +971,7 @@ function endHand(room) {
         return;
       }
       if (remaining.length === 1) {
-        emitLog(room, `🏆 ${remaining[0].name} gana la partida! 🎉`, 'champion');
+        emitLog(room, `${remaining[0].name} gana la partida!`, 'champion');
         io.to(room.id).emit('gameOver', { winner: remaining[0].name });
         setTimeout(() => { if (rooms.has(room.id)) closeRoom(room, `${remaining[0].name} ganó la partida.`); }, 2500);
       } else {
@@ -996,7 +1015,7 @@ function requestRevive(room, socketId) {
     expiresAt: Date.now() + REVIVE_VOTE_TIME
   };
 
-  emitLog(room, `🔄 ${player.name} solicita revivir. ¡Voten!`, 'revive');
+  emitLog(room, `${player.name} solicita revivir. ¡Voten!`, 'revive');
   emitRoomState(room);
 
   setTimeout(() => {
@@ -1086,7 +1105,7 @@ function kickPlayer(room, hostSocketId, targetId) {
   if (targetId === hostSocketId) return false;
   const target = room.players.find(p => p.id === targetId);
   if (!target) return false;
-  emitLog(room, `🚫 ${target.name} fue expulsado.`, 'kick');
+  emitLog(room, `${target.name} fue expulsado.`, 'kick');
   io.to(targetId).emit('kicked', { reason: 'Fuiste expulsado por el anfitrión.' });
   removePlayerFromRoom(room, targetId, false);
   return true;
@@ -1099,7 +1118,7 @@ function banPlayer(room, hostSocketId, targetId) {
   if (!target) return false;
   if (!bannedPlayers.has(room.id)) bannedPlayers.set(room.id, new Set());
   bannedPlayers.get(room.id).add(target.name);
-  emitLog(room, `🔨 ${target.name} fue baneado.`, 'ban');
+  emitLog(room, `${target.name} fue baneado.`, 'ban');
   io.to(targetId).emit('banned', { reason: 'Fuiste baneado de esta sala.' });
   removePlayerFromRoom(room, targetId, false);
   return true;
@@ -1119,7 +1138,7 @@ function addChips(room, hostSocketId, targetId, amount) {
     room.spectators = room.spectators.filter(s => s.id !== targetId);
     io.to(targetId).emit('revived', { stack: target.stack });
   }
-  emitLog(room, `💰 ${amt} fichas dadas a ${target.name}.`, 'chips');
+  emitLog(room, `${amt} fichas dadas a ${target.name}.`, 'chips');
   emitRoomState(room);
   return true;
 }
@@ -1137,7 +1156,7 @@ function restartGame(room, hostSocketId) {
   room.gameState = null;
   room.state = 'waiting';
   room.hasStarted = false;
-  emitLog(room, '🔄 El anfitrión reinició la partida.', 'info');
+  emitLog(room, 'El anfitrión reinició la partida.', 'info');
   emitRoomState(room);
   broadcastRoomList();
   return true;
@@ -1146,7 +1165,7 @@ function restartGame(room, hostSocketId) {
 function endGame(room, hostSocketId) {
   if (!assertHost(room, hostSocketId)) return false;
   clearTurnTimer(room);
-  emitLog(room, '🛑 El anfitrión terminó la partida.', 'info');
+  emitLog(room, 'El anfitrión terminó la partida.', 'info');
   return closeRoom(room, 'El anfitrión cerró la sala.');
 }
 
@@ -1192,7 +1211,7 @@ function removePlayerFromRoom(room, socketId, disconnect=false) {
     if (disconnect) {
       player.disconnected = true;
       player.status = 'disconnected';
-      emitLog(room, `📡 ${player.name} se desconectó.`, 'disconnect');
+      emitLog(room, `${player.name} se desconectó.`, 'disconnect');
 
       const gs = room.gameState;
       if (gs && gs.phase !== 'waiting' && gs.phase !== 'showdown') {
@@ -1270,7 +1289,7 @@ function removePlayerFromRoom(room, socketId, disconnect=false) {
     const newHost = room.players.find(p => !p.disconnected && !p.eliminated && p.stack > 0) || room.players.find(p => !p.disconnected);
     if (newHost && !room.settings.closeOnHostLeave) {
       room.hostSocketId = newHost.id;
-      emitLog(room, `👑 ${playerName} (anfitrión) se fue. Nuevo anfitrión: ${newHost.name}.`, 'info');
+      emitLog(room, `${playerName} (anfitrión) se fue. Nuevo anfitrión: ${newHost.name}.`, 'info');
       io.to(newHost.id).emit('becameHost');
     } else {
       checkRoomEmpty(room);
@@ -1286,7 +1305,7 @@ function removePlayerFromRoom(room, socketId, disconnect=false) {
     const activeLeft = room.players.filter(p => !p.eliminated && !p.disconnected && p.stack > 0);
     const bustedWithRevive = room.players.filter(p => p.eliminated && !p.disconnected && room.settings.allowRevive);
     if (activeLeft.length < MIN_PLAYERS && bustedWithRevive.length === 0) {
-      const msg = activeLeft[0] ? `🏆 ${activeLeft[0].name} gana. La sala se cerró.` : 'La partida terminó.';
+      const msg = activeLeft[0] ? `${activeLeft[0].name} gana. La sala se cerró.` : 'La partida terminó.';
       setTimeout(() => { if (rooms.has(room.id)) closeRoom(room, msg); }, 1500);
       return;
     }
@@ -1360,7 +1379,7 @@ io.on('connection', (socket) => {
       socket.emit('roomJoined', { roomId, isHost: true, gameMode });
       emitRoomState(room);
       broadcastRoomList();
-      emitLog(room, `👑 ${playerName} creó la sala. Modo: ${gameMode === 'classic' ? 'Póker Clásico' : 'Texas Hold\'em'}`, 'info');
+      emitLog(room, `${playerName} creó la sala. Modo: ${gameMode === 'classic' ? 'Póker Clásico' : 'Texas Hold\'em'}`, 'info');
     } catch(e) { socket.emit('error', { msg: 'Error al crear sala.' }); }
   });
 
@@ -1398,7 +1417,7 @@ io.on('connection', (socket) => {
         const isHost = room.hostSocketId === socket.id;
         socket.emit('roomJoined', { roomId: room.id, isHost, gameMode: room.gameMode });
         if (isHost) socket.emit('becameHost');
-        emitLog(room, `📡 ${playerName} reconectado.`, 'info');
+        emitLog(room, `${playerName} reconectado.`, 'info');
         emitRoomState(room);
         return;
       }
@@ -1413,7 +1432,7 @@ io.on('connection', (socket) => {
         socketToRoom.set(socket.id, room.id);
         socket.join(room.id);
         socket.emit('roomJoined', { roomId: room.id, isHost: false, isSpectator: true, gameMode: room.gameMode });
-        emitLog(room, `👁️ ${playerName} se unió como espectador.`, 'info');
+        emitLog(room, `${playerName} se unió como espectador.`, 'info');
         emitRoomState(room);
         broadcastRoomList();
         return;
@@ -1450,6 +1469,7 @@ io.on('connection', (socket) => {
   socket.on('action', (data) => {
     const room = getPlayerRoom(socket.id);
     if (!room || room.state !== 'playing') return;
+    if (room.paused) return socket.emit('error', { msg: 'La partida está pausada.' });
     if (!data || typeof data !== 'object') return;
     const action = data.action;
     const amount = parseInt(data.amount) || 0;
@@ -1462,6 +1482,26 @@ io.on('connection', (socket) => {
     if (!room || room.state !== 'playing') return;
     const indices = Array.isArray(data?.indices) ? data.indices : [];
     handleExchangeAction(room, socket.id, 'exchange', indices);
+  });
+
+
+  socket.on('emote', (data) => {
+    const room = getPlayerRoom(socket.id);
+    if (!room) return;
+    const allowed = new Set(['BLUFF','NICE','WOW','ALL IN','GG']);
+    const label = String(data?.label || '').toUpperCase().slice(0, 12);
+    if (!allowed.has(label)) return;
+    const entity = room.players.find(p=>p.id===socket.id) || room.spectators.find(s=>s.id===socket.id);
+    if (!entity) return;
+    io.to(room.id).emit('emote', { system: true, type: 'emote', playerId: socket.id, name: entity.name, text: label, ts: Date.now() });
+  });
+
+  socket.on('togglePause', () => {
+    const room = getPlayerRoom(socket.id);
+    if (!room || room.hostSocketId !== socket.id) return;
+    room.paused = !room.paused;
+    emitLog(room, room.paused ? 'Partida pausada por el anfitrión.' : 'Partida reanudada por el anfitrión.', 'warning');
+    emitRoomState(room);
   });
 
   socket.on('chatMessage', (data) => {
@@ -1523,7 +1563,7 @@ io.on('connection', (socket) => {
   socket.on('leaveRoom', () => {
     const room = getPlayerRoom(socket.id);
     if (!room) return;
-    emitLog(room, `🚪 ${getPlayerName(socket.id, room)} abandonó la sala.`, 'leave');
+    emitLog(room, `${getPlayerName(socket.id, room)} abandonó la sala.`, 'leave');
     removePlayerFromRoom(room, socket.id, false);
     socket.leave(room.id);
   });
