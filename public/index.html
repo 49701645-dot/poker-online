@@ -1266,6 +1266,41 @@ body.sidebar-hidden #game-sidebar.mobile-open{display:none!important;opacity:0!i
   </div>
 </div>
 
+<!-- Profile Customization -->
+<div class="overlay" id="overlay-profile">
+  <div class="panel profile-panel">
+    <div class="panel-title">Personalizar Perfil</div>
+
+    <div class="profile-preview">
+      <div class="seat-avatar" id="profile-preview-avatar"></div>
+      <div>
+        <div class="profile-name-preview" id="profile-preview-name">Jugador</div>
+        <div class="profile-help">Este perfil queda guardado en este navegador y se usa automáticamente al crear o entrar a salas.</div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Nombre</label>
+      <input class="form-input" id="pf-playername" placeholder="Tu apodo" maxlength="20" oninput="previewProfile()"/>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Avatar</label>
+      <div class="choice-grid" id="avatar-choice-grid"></div>
+      <div class="choice-note">La opción Inicial usa la primera letra de tu nombre.</div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Reacciones equipadas <span id="emote-count-note">(0/4)</span></label>
+      <div class="choice-grid" id="reaction-choice-grid"></div>
+      <div class="choice-note">Elegí hasta 4. Se muestran como botones rápidos dentro del chat de la sala.</div>
+    </div>
+
+    <button class="btn btn-gold btn-block" onclick="saveProfileFromModal()">Guardar Perfil</button>
+    <button class="btn btn-ghost btn-block" onclick="closeOverlay('overlay-profile')">Cancelar</button>
+  </div>
+</div>
+
 <!-- Join Private -->
 <div class="overlay" id="overlay-join-private">
   <div class="panel">
