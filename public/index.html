@@ -875,6 +875,18 @@ body.sidebar-hidden #game-sidebar.mobile-open{display:none!important;opacity:0!i
 .avatar-initial{font-family:'Cinzel',serif;font-weight:900;color:var(--gold2);font-size:1rem}.host-crown{font-size:.74rem!important}.host-crown::before{content:'★';color:var(--gold2)}.host-crown{color:transparent!important}.disconnected-overlay,.eliminated-overlay{font-size:0!important}.disconnected-overlay::before{content:'OFF';font-size:.55rem}.eliminated-overlay::before{content:'OUT';font-size:.55rem}
 @media(max-width:620px){.lobby-join-strip{grid-template-columns:1fr}.room-card{grid-template-columns:1fr}.room-card-join{width:100%}.emote-bar{grid-template-columns:repeat(2,1fr)}}
 
+
+
+/* ---- PROFILE PACK: original avatars, animated reactions, cleaner hand controls ---- */
+#my-hand-controls{left:50%;transform:translateX(-50%);bottom:92px;gap:10px;padding:8px 10px;background:rgba(0,0,0,.34);border:1px solid rgba(201,168,76,.18);border-radius:999px;backdrop-filter:blur(8px);z-index:60}
+#my-stack-pill{position:relative;z-index:2;min-width:108px;justify-content:center}
+#btn-hide-cards{white-space:nowrap;min-width:118px;text-align:center}
+@media(max-width:768px){#my-hand-controls{bottom:102px;max-width:96vw}.seat-bottom{transform:translate(-50%,-50%) scale(.96)}}
+.profile-preview{display:flex;align-items:center;gap:14px;background:rgba(0,0,0,.25);border:1px solid rgba(201,168,76,.15);border-radius:16px;padding:12px;margin-bottom:16px}.profile-preview .seat-avatar{position:relative}.profile-name-preview{font-weight:900;color:var(--gold2);font-size:1.05rem}.profile-help{color:var(--text2);font-size:.86rem;line-height:1.35}.choice-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:8px}.avatar-choice,.reaction-choice{border:1px solid rgba(201,168,76,.18);border-radius:14px;background:rgba(0,0,0,.26);padding:10px;min-height:76px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;color:var(--text2);font-weight:800;letter-spacing:.04em;transition:.18s}.avatar-choice:hover,.reaction-choice:hover{border-color:rgba(201,168,76,.55);transform:translateY(-1px)}.avatar-choice.active,.reaction-choice.active{border-color:var(--gold2);box-shadow:0 0 0 2px rgba(201,168,76,.14),0 0 24px rgba(201,168,76,.16);background:rgba(201,168,76,.1)}.choice-note{font-size:.78rem;color:var(--text3);margin-top:8px}.reaction-choice small{font-size:.66rem;color:var(--text3);letter-spacing:.06em}.emote-bar.profile-emotes{grid-template-columns:repeat(4,1fr)}.emote-btn .react-icon{margin:0 auto 4px}.emote-btn span:last-child{display:block;font-size:.64rem;color:var(--text2)}
+.avatar-art{width:44px;height:44px;border-radius:50%;position:relative;display:inline-flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid rgba(245,210,122,.45);box-shadow:inset 0 0 18px rgba(0,0,0,.45),0 0 16px rgba(201,168,76,.16)}.avatar-art::before,.avatar-art::after{content:'';position:absolute}.avatar-initial{font-family:'Cinzel',serif;font-weight:900;color:var(--gold2);font-size:1rem}.av-orion{background:radial-gradient(circle at 34% 30%,#f5d27a 0 7%,transparent 8%),linear-gradient(135deg,#171b38,#07120d)}.av-orion::before{width:62%;height:62%;border:2px solid rgba(245,210,122,.7);border-radius:50%;transform:rotate(-25deg)}.av-onyx{background:linear-gradient(135deg,#050505,#29313a)}.av-onyx::before{width:70%;height:70%;background:linear-gradient(135deg,transparent 48%,rgba(245,210,122,.85) 49% 54%,transparent 55%);border-radius:50%}.av-goldfox{background:linear-gradient(135deg,#3b2608,#c9a84c)}.av-goldfox::before{width:58%;height:48%;clip-path:polygon(50% 0,100% 40%,78% 100%,22% 100%,0 40%);background:#07120d}.av-velvet{background:radial-gradient(circle,#5c1230,#100612)}.av-velvet::before{width:70%;height:70%;border:2px solid #f5d27a;clip-path:polygon(50% 0,61% 36%,99% 36%,68% 58%,79% 94%,50% 72%,21% 94%,32% 58%,1% 36%,39% 36%)}.av-crown{background:linear-gradient(135deg,#0a2d1c,#1d7348)}.av-crown::before{width:64%;height:38%;bottom:12px;background:#f5d27a;clip-path:polygon(0 100%,0 34%,22% 62%,50% 0,78% 62%,100% 34%,100% 100%)}.av-eclipse{background:linear-gradient(135deg,#0d0f1f,#2d234a)}.av-eclipse::before{width:58%;height:58%;border-radius:50%;background:#f5d27a}.av-eclipse::after{width:52%;height:52%;border-radius:50%;background:#151323;transform:translateX(7px)}.av-delta{background:linear-gradient(135deg,#10202a,#0d4a2e)}.av-delta::before{width:58%;height:58%;clip-path:polygon(50% 0,100% 100%,0 100%);border:2px solid #f5d27a}.av-ace{background:linear-gradient(135deg,#1a1a2e,#070707)}.av-ace::before{width:46%;height:56%;background:#f5d27a;clip-path:polygon(50% 0,90% 42%,62% 42%,78% 100%,22% 100%,38% 42%,10% 42%)}
+.react-icon{width:36px;height:36px;border-radius:50%;position:relative;display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(245,210,122,.45);background:radial-gradient(circle at 35% 25%,rgba(245,210,122,.45),rgba(201,168,76,.12) 36%,rgba(0,0,0,.35));box-shadow:0 0 16px rgba(201,168,76,.18);overflow:hidden}.react-icon::before,.react-icon::after{content:'';position:absolute}.rx-farol::before{width:48%;height:48%;border-radius:50%;border:2px solid #f5d27a;animation:rxPulse 1.2s infinite}.rx-buena::before{width:56%;height:34%;border-left:3px solid #f5d27a;border-bottom:3px solid #f5d27a;transform:rotate(-45deg);animation:rxPop 1s infinite}.rx-fuego::before{width:42%;height:58%;background:#f5d27a;clip-path:polygon(50% 0,72% 28%,95% 58%,70% 100%,30% 100%,8% 58%,36% 30%);animation:rxFlicker .8s infinite alternate}.rx-ficha::before{width:66%;height:66%;border-radius:50%;border:4px dotted #f5d27a;animation:rxSpin 1.6s linear infinite}.rx-rey::before{width:62%;height:40%;bottom:9px;background:#f5d27a;clip-path:polygon(0 100%,0 30%,24% 58%,50% 0,76% 58%,100% 30%,100% 100%);animation:rxPop 1.4s infinite}.rx-risa::before{width:58%;height:30%;border-bottom:3px solid #f5d27a;border-radius:0 0 50% 50%;animation:rxBounce 1s infinite}.rx-sombra::before{width:58%;height:58%;border-radius:50%;background:#f5d27a}.rx-sombra::after{width:54%;height:54%;border-radius:50%;background:#07120d;transform:translateX(7px);animation:rxSlide 1.4s infinite}.rx-golpe::before{width:64%;height:64%;border:2px solid #f5d27a;clip-path:polygon(50% 0,61% 35%,98% 35%,68% 55%,80% 92%,50% 70%,20% 92%,32% 55%,2% 35%,39% 35%);animation:rxImpact .85s infinite}.emote-pop{min-width:76px;min-height:56px;border-radius:18px;background:rgba(7,18,13,.94);border:1px solid rgba(245,210,122,.55);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--gold2)}.emote-pop .react-icon{transform:scale(.9)}.emote-pop .react-label{font-size:.62rem;font-weight:1000;letter-spacing:.08em}@keyframes rxPulse{50%{transform:scale(1.18);opacity:.65}}@keyframes rxPop{50%{transform:scale(1.12) rotate(var(--r,0deg))}}@keyframes rxFlicker{to{transform:scale(1.08) rotate(-5deg);opacity:.75}}@keyframes rxSpin{to{transform:rotate(360deg)}}@keyframes rxBounce{50%{transform:translateY(4px)}}@keyframes rxSlide{50%{transform:translateX(-3px)}}@keyframes rxImpact{50%{transform:scale(1.18);filter:brightness(1.4)}}
+@media(max-width:520px){.choice-grid{grid-template-columns:repeat(2,1fr)}.emote-bar.profile-emotes{grid-template-columns:repeat(2,1fr)}#btn-hide-cards{min-width:96px;font-size:.72rem}#my-stack-pill{min-width:96px}}
+
 </style>
 </head>
 <body>
@@ -902,7 +914,7 @@ body.sidebar-hidden #game-sidebar.mobile-open{display:none!important;opacity:0!i
     <button class="menu-btn menu-btn-primary" onclick="showCreateRoom()"><span class="ico ico-card"></span>Crear Sala</button>
     <button class="menu-btn menu-btn-secondary" onclick="showLobby()"><span class="ico ico-search"></span>Salas Públicas</button>
     <button class="menu-btn menu-btn-secondary" onclick="showJoinPrivate()"><span class="ico ico-lock"></span>Unirse con Código</button>
-    <button class="menu-btn menu-btn-secondary" onclick="openNameGate(true)"><span class="ico ico-edit"></span>Cambiar Nombre</button>
+    <button class="menu-btn menu-btn-secondary" onclick="openProfileModal()"><span class="ico ico-edit"></span>Personalizar Perfil</button>
     <div class="current-name-pill" id="current-name-pill"></div>
     <div class="menu-audio-panel">
       <div class="menu-audio-head"><span><span class="ico ico-music"></span>Música del juego</span><button id="menu-audio-toggle" onclick="toggleAudioEnabled()">Activar</button></div>
@@ -997,7 +1009,7 @@ body.sidebar-hidden #game-sidebar.mobile-open{display:none!important;opacity:0!i
       <div id="my-hand-info"></div>
       <div id="my-hand-controls" style="display:none">
         <span id="my-stack-pill"><span class="ico ico-chip"></span>0 fichas</span>
-        <button class="top-btn top-btn-eye" id="btn-hide-cards" onclick="toggleHideCards()">Ocultar cartas</button>
+        <button class="top-btn top-btn-eye" id="btn-hide-cards" onclick="toggleHideCards()">Ocultar</button>
       </div>
       <div id="exchange-panel" style="display:none">
         <div id="exchange-title">Cambio de cartas</div>
@@ -1069,19 +1081,12 @@ body.sidebar-hidden #game-sidebar.mobile-open{display:none!important;opacity:0!i
         <!-- Chat -->
         <div id="tab-chat">
           <div id="chat-messages"></div>
-          <div class="emote-bar">
-            <button class="emote-btn" onclick="sendEmote('BLUFF')">BLUFF</button>
-            <button class="emote-btn" onclick="sendEmote('NICE')">NICE</button>
-            <button class="emote-btn" onclick="sendEmote('WOW')">WOW</button>
-            <button class="emote-btn" onclick="sendEmote('ALL IN')">ALL IN</button>
-            <button class="emote-btn" onclick="sendEmote('GG')">GG</button>
-            <button class="emote-btn" onclick="showHandHistory()">HISTORIAL</button>
-          </div>
+          <div class="emote-bar profile-emotes" id="equipped-emote-bar"></div>
           <div id="hand-history-box" class="history-box"></div>
           <div id="chat-input-row">
             <span id="chat-disabled-note">Chat escrito desactivado. Solo se muestran alertas del sistema.</span>
             <input id="chat-input" placeholder="Mensaje..." maxlength="200" onkeydown="if(event.key==='Enter')sendChat()"/>
-            <button id="chat-send" onclick="sendChat()">➤</button>
+            <button id="chat-send" onclick="sendChat()">Enviar</button>
           </div>
         </div>
         <!-- Players -->
@@ -1298,7 +1303,7 @@ body.sidebar-hidden #game-sidebar.mobile-open{display:none!important;opacity:0!i
 
 <!-- Game Over -->
 <div id="gameover-overlay">
-  <div class="gameover-title"> ¡CAMPEÓN!</div>
+  <div class="gameover-title">CAMPEÓN</div>
   <div class="gameover-winner" id="gameover-winner"></div>
   <div class="gameover-btns">
     <button class="btn btn-gold" onclick="leaveRoom()"><span class="ico ico-exit"></span>Salir</button>
@@ -1335,6 +1340,9 @@ const state = {
   showdownActive: false,
   lastHandLog: [],
   playerName: '',
+  profile: null,
+  selectedAvatarId: 'initial',
+  selectedEmoteIds: [],
   pendingDirectRoom: null,
   selectedExchangeCards: [],
   audioReady: false,
@@ -1350,9 +1358,141 @@ window.addEventListener('resize', setAppVh);
 window.visualViewport?.addEventListener('resize', setAppVh);
 setAppVh();
 
-// ============================================================ AVATARS
-function getAvatar(name) { const n=String(name||'P').trim(); return `<span class="avatar-initial">${escHtml((n[0]||'P').toUpperCase())}</span>`; }
-
+// ============================================================ PROFILE / AVATARS / REACTIONS
+const AVATAR_OPTIONS = [
+  {id:'initial', name:'Inicial'},
+  {id:'orion', name:'Orion'},
+  {id:'onyx', name:'Onyx'},
+  {id:'goldfox', name:'Zorro'},
+  {id:'velvet', name:'Velvet'},
+  {id:'crown', name:'Corona'},
+  {id:'eclipse', name:'Eclipse'},
+  {id:'delta', name:'Delta'},
+  {id:'ace', name:'As'}
+];
+const REACTION_OPTIONS = [
+  {id:'farol', label:'FAROL'},
+  {id:'buena', label:'BUENA'},
+  {id:'fuego', label:'FUEGO'},
+  {id:'ficha', label:'FICHA'},
+  {id:'rey', label:'REY'},
+  {id:'risa', label:'RISA'},
+  {id:'sombra', label:'SOMBRA'},
+  {id:'golpe', label:'GOLPE'}
+];
+const DEFAULT_EMOTES = ['farol','buena','fuego','ficha'];
+function reactionById(id){ return REACTION_OPTIONS.find(e=>e.id===id) || REACTION_OPTIONS[0]; }
+function avatarById(id){ return AVATAR_OPTIONS.find(a=>a.id===id) || AVATAR_OPTIONS[0]; }
+function sanitizeProfileName(value){ return cleanName(value); }
+function defaultProfile(){
+  const name = cleanName(localStorage.getItem('pokerName') || '');
+  return { name, avatarId: 'initial', emotes: DEFAULT_EMOTES.slice() };
+}
+function getStoredProfile(){
+  try {
+    const raw = JSON.parse(localStorage.getItem('pokerProfile') || 'null');
+    if (!raw || typeof raw !== 'object') return defaultProfile();
+    const name = sanitizeProfileName(raw.name || localStorage.getItem('pokerName') || '');
+    const avatarId = avatarById(raw.avatarId).id;
+    const emotes = (Array.isArray(raw.emotes) ? raw.emotes : DEFAULT_EMOTES).filter(id=>REACTION_OPTIONS.some(e=>e.id===id)).slice(0,4);
+    return { name, avatarId, emotes: emotes.length ? emotes : DEFAULT_EMOTES.slice() };
+  } catch { return defaultProfile(); }
+}
+function setStoredProfile(profile){
+  const safe = {
+    name: sanitizeProfileName(profile.name),
+    avatarId: avatarById(profile.avatarId).id,
+    emotes: (profile.emotes||DEFAULT_EMOTES).filter(id=>REACTION_OPTIONS.some(e=>e.id===id)).slice(0,4)
+  };
+  localStorage.setItem('pokerProfile', JSON.stringify(safe));
+  if (safe.name) localStorage.setItem('pokerName', safe.name);
+  state.profile = safe;
+  state.playerName = safe.name;
+  state.selectedAvatarId = safe.avatarId;
+  state.selectedEmoteIds = safe.emotes.slice();
+  updateCurrentNameUI();
+  renderEquippedEmoteBar();
+  return safe;
+}
+function getJoinProfile(){
+  const profile = state.profile || getStoredProfile();
+  return { avatarId: profile.avatarId || 'initial', emotes: (profile.emotes || DEFAULT_EMOTES).slice(0,4) };
+}
+function renderAvatar(id, name){
+  const initial = escHtml(((name||'P').trim()[0]||'P').toUpperCase());
+  if (!id || id === 'initial') return `<span class="avatar-initial">${initial}</span>`;
+  return `<span class="avatar-art av-${escHtml(id)}" aria-label="${escHtml(avatarById(id).name)}"></span>`;
+}
+function getAvatar(name, avatarId) { return renderAvatar(avatarId, name); }
+function renderReactionIcon(id){
+  const em = reactionById(id);
+  return `<span class="react-icon rx-${escHtml(em.id)}"></span>`;
+}
+function openProfileModal(){
+  const profile = getStoredProfile();
+  state.selectedAvatarId = profile.avatarId;
+  state.selectedEmoteIds = profile.emotes.slice(0,4);
+  document.getElementById('pf-playername').value = profile.name || '';
+  buildProfileChoices();
+  previewProfile();
+  document.getElementById('overlay-profile').classList.add('active');
+  setTimeout(()=>document.getElementById('pf-playername')?.focus(),50);
+}
+function buildProfileChoices(){
+  const ag = document.getElementById('avatar-choice-grid');
+  const rg = document.getElementById('reaction-choice-grid');
+  if (ag) {
+    ag.innerHTML = AVATAR_OPTIONS.map(a=>`<button class="avatar-choice ${state.selectedAvatarId===a.id?'active':''}" onclick="selectAvatar('${a.id}')">${renderAvatar(a.id, document.getElementById('pf-playername')?.value || 'P')}<small>${escHtml(a.name)}</small></button>`).join('');
+  }
+  if (rg) {
+    rg.innerHTML = REACTION_OPTIONS.map(e=>`<button class="reaction-choice ${state.selectedEmoteIds.includes(e.id)?'active':''}" onclick="toggleProfileEmote('${e.id}')">${renderReactionIcon(e.id)}<small>${escHtml(e.label)}</small></button>`).join('');
+  }
+  const note = document.getElementById('emote-count-note'); if(note) note.textContent = `(${state.selectedEmoteIds.length}/4)`;
+}
+function selectAvatar(id){ state.selectedAvatarId = avatarById(id).id; buildProfileChoices(); previewProfile(); }
+function toggleProfileEmote(id){
+  id = reactionById(id).id;
+  const list = state.selectedEmoteIds;
+  if (list.includes(id)) state.selectedEmoteIds = list.filter(x=>x!==id);
+  else {
+    if (list.length >= 4) return showNotif('Podés equipar hasta 4 reacciones.', 'warning');
+    state.selectedEmoteIds = [...list, id];
+  }
+  buildProfileChoices(); previewProfile();
+}
+function previewProfile(){
+  const name = sanitizeProfileName(document.getElementById('pf-playername')?.value || '') || 'Jugador';
+  const av = document.getElementById('profile-preview-avatar');
+  const nm = document.getElementById('profile-preview-name');
+  if (av) av.innerHTML = renderAvatar(state.selectedAvatarId, name);
+  if (nm) nm.textContent = name;
+  buildProfileChoices();
+}
+function saveProfileFromModal(){
+  const name = sanitizeProfileName(document.getElementById('pf-playername').value);
+  if (name.length < 2) return showNotif('El nombre debe tener al menos 2 caracteres.', 'error');
+  if (state.selectedEmoteIds.length === 0) state.selectedEmoteIds = DEFAULT_EMOTES.slice();
+  setStoredProfile({ name, avatarId: state.selectedAvatarId, emotes: state.selectedEmoteIds });
+  closeOverlay('overlay-profile');
+  showNotif('Perfil guardado.', 'success');
+  if (state.pendingDirectRoom) {
+    state.joinTargetRoom = state.pendingDirectRoom;
+    state.pendingDirectRoom = null;
+    document.getElementById('jr-playername').value = state.playerName;
+    document.getElementById('jr-playername').readOnly = true;
+    document.getElementById('overlay-join').classList.add('active');
+  }
+}
+function renderEquippedEmoteBar(){
+  const bar = document.getElementById('equipped-emote-bar');
+  if (!bar) return;
+  const profile = state.profile || getStoredProfile();
+  const emotes = (profile.emotes || DEFAULT_EMOTES).slice(0,4);
+  bar.innerHTML = emotes.map(id => {
+    const e = reactionById(id);
+    return `<button class="emote-btn" onclick="sendEmote('${e.id}')">${renderReactionIcon(e.id)}<span>${escHtml(e.label)}</span></button>`;
+  }).join('') + `<button class="emote-btn" onclick="showHandHistory()"><span class="ico ico-history"></span><span>HISTORIAL</span></button>`;
+}
 // ============================================================ SEAT POSITIONS
 const seatLayouts = {
   // index 0 is ALWAYS the current viewer when they are playing, so each player sees themselves abajo.
@@ -1374,16 +1514,18 @@ function cleanName(value) {
   return String(value||'').replace(/[<>&"']/g,'').trim().slice(0,20);
 }
 function getStoredName() {
-  return cleanName(localStorage.getItem('pokerName') || '');
+  const pf = getStoredProfile();
+  return cleanName(pf.name || localStorage.getItem('pokerName') || '');
 }
 function requirePlayerName() {
-  const name = getStoredName();
+  const profile = getStoredProfile();
+  const name = cleanName(profile.name || '');
   if (name.length < 2) {
-    openNameGate(false);
+    if (state.pendingDirectRoom || state.joinTargetRoom) openNameGate(false);
+    else openProfileModal();
     return false;
   }
-  state.playerName = name;
-  updateCurrentNameUI();
+  setStoredProfile(profile);
   return true;
 }
 function openNameGate(canClose=false) {
@@ -1395,13 +1537,15 @@ function openNameGate(canClose=false) {
 function savePlayerName() {
   const name = cleanName(document.getElementById('ng-playername').value);
   if (name.length < 2) return showNotif('El nombre debe tener al menos 2 caracteres.', 'error');
-  localStorage.setItem('pokerName', name);
-  state.playerName = name;
+  const directOnly = !!state.pendingDirectRoom;
+  setStoredProfile({ name, avatarId: directOnly ? 'initial' : (state.selectedAvatarId || 'initial'), emotes: state.selectedEmoteIds?.length ? state.selectedEmoteIds : DEFAULT_EMOTES });
   document.getElementById('overlay-name-gate').classList.remove('active');
   updateCurrentNameUI();
-  if (state.pendingDirectRoom) {
-    state.joinTargetRoom = state.pendingDirectRoom;
-    state.pendingDirectRoom = null;
+  if (state.pendingDirectRoom || state.joinTargetRoom) {
+    if (state.pendingDirectRoom) {
+      state.joinTargetRoom = state.pendingDirectRoom;
+      state.pendingDirectRoom = null;
+    }
     document.getElementById('jr-playername').value = state.playerName;
     document.getElementById('jr-playername').readOnly = true;
     document.getElementById('overlay-join').classList.add('active');
@@ -1411,7 +1555,8 @@ function savePlayerName() {
 }
 function updateCurrentNameUI() {
   const pill = document.getElementById('current-name-pill');
-  if (pill) pill.innerHTML = state.playerName ? `Jugando como <b>${escHtml(state.playerName)}</b>` : '';
+  const profile = state.profile || getStoredProfile();
+  if (pill) pill.innerHTML = profile.name ? `Jugando como <b>${escHtml(profile.name)}</b>` : '';
 }
 
 // ============================================================ SCREEN MANAGEMENT
@@ -1484,7 +1629,7 @@ function createRoom() {
 
   localStorage.setItem('pokerName', playerName);
   closeOverlay('overlay-create');
-  socket.emit('createRoom', { playerName, roomName, password, maxPlayers, startingStack, gameMode, settings });
+  socket.emit('createRoom', { playerName, profile: getJoinProfile(), roomName, password, maxPlayers, startingStack, gameMode, settings });
 }
 
 function joinPrivate() {
@@ -1495,7 +1640,7 @@ function joinPrivate() {
   if (!roomId) return showNotif('Ingresa el ID de sala', 'error');
   localStorage.setItem('pokerName', playerName);
   closeOverlay('overlay-join-private');
-  socket.emit('joinRoom', { playerName, roomId, password });
+  socket.emit('joinRoom', { playerName, profile: getJoinProfile(), roomId, password });
 }
 
 // ============================================================ LOBBY / ROOMS
@@ -1546,6 +1691,18 @@ function filterRooms() {
     grid.appendChild(div);
   });
 }
+function quickJoinByCode(){
+  const code = (document.getElementById('quick-room-code')?.value || '').trim().toLowerCase();
+  if (!code) return showNotif('Ingresá un código de sala.', 'warning');
+  const room = allRooms.find(r => String(r.id).toLowerCase() === code);
+  state.joinTargetRoom = code;
+  if (!requirePlayerName()) return;
+  document.getElementById('jr-playername').value = state.playerName;
+  document.getElementById('jr-playername').readOnly = true;
+  document.getElementById('jr-password-group').style.display = room?.hasPassword ? 'block' : 'none';
+  document.getElementById('jr-password').value = '';
+  document.getElementById('overlay-join').classList.add('active');
+}
 function openJoinModal(roomId, hasPassword) {
   state.joinTargetRoom = roomId;
   document.getElementById('jr-playername').value = state.playerName || getStoredName();
@@ -1563,7 +1720,7 @@ function joinRoom() {
   if (!roomId) return;
   localStorage.setItem('pokerName', playerName);
   closeOverlay('overlay-join');
-  socket.emit('joinRoom', { playerName, roomId, password });
+  socket.emit('joinRoom', { playerName, profile: getJoinProfile(), roomId, password });
 }
 
 // ============================================================ GAME SCREEN SETUP
@@ -1659,7 +1816,7 @@ function renderWaitingRoom(gs) {
     const div = document.createElement('div');
     div.className = 'waiting-player';
     div.innerHTML = `
-      <div class="waiting-player-avatar">${getAvatar(p.name)}</div>
+      <div class="waiting-player-avatar">${getAvatar(p.name, p.avatarId)}</div>
       <div class="waiting-player-name">${escHtml(p.name)}${p.isHost ? '<span class="waiting-host-badge">HOST</span>' : ''}</div>
     `;
     container.appendChild(div);
@@ -1784,7 +1941,7 @@ function renderSeats(gs) {
     seat.innerHTML = `
       ${cardsHtml}
       <div class="seat-avatar" title="${escHtml(player.name)}">
-        ${getAvatar(player.name)}
+        ${getAvatar(player.name, player.avatarId)}
         ${overlayHtml}
       </div>
       ${blindBadge}
@@ -1913,7 +2070,7 @@ function renderPlayersList(gs) {
     }
 
     div.innerHTML = `
-      <div class="player-list-avatar">${getAvatar(p.name)}</div>
+      <div class="player-list-avatar">${getAvatar(p.name, p.avatarId)}</div>
       <div class="player-list-info">
         <div class="player-list-name">${escHtml(p.name)}${p.id===gs.myId?' (Tú)':''}</div>
         ${!p.spectator ? `<div class="player-list-stack">${renderChipStack(p.stack)} ${formatChips(p.stack)}</div>` : ''}
@@ -2337,7 +2494,13 @@ function addChatMessage(msg) {
 
   if (msg.system) {
     div.className = `chat-msg chat-msg-system chat-msg-${msg.type||'info'}`;
-    div.textContent = msg.text;
+    if (msg.type === 'emote') {
+      const time = new Date(msg.ts).toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'});
+      const e = reactionById(msg.emoteId || msg.text);
+      div.innerHTML = `<span class="chat-msg-name">${escHtml(msg.name || 'Jugador')}</span><span class="chat-msg-time">${time}</span><br><span style="display:inline-flex;align-items:center;gap:8px;margin-top:4px">${renderReactionIcon(e.id)}${escHtml(e.label)}</span>`;
+    } else {
+      div.textContent = msg.text;
+    }
   } else {
     div.className = 'chat-msg chat-msg-player';
     const time = new Date(msg.ts).toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'});
@@ -2346,7 +2509,7 @@ function addChatMessage(msg) {
 
   container.appendChild(div);
   if (msg.type === 'allin') showAllInFlash();
-  if (msg.type === 'emote' && msg.playerId) showSeatEmote(msg.playerId, msg.text);
+  if (msg.type === 'emote' && msg.playerId) showSeatEmote(msg.playerId, msg.text, msg.emoteId);
   container.scrollTop = container.scrollHeight;
 
   // Keep max 100 messages
@@ -2364,17 +2527,20 @@ function showHandHistory(){
     ? state.lastHandLog.map(x=>`<div class="history-line">${escHtml(x.text || x)}</div>`).join('')
     : '<div class="history-line">Todavía no hay una mano anterior.</div>';
 }
-function sendEmote(label){
-  socket.emit('emote', { label });
+function sendEmote(emoteId){
+  const e = reactionById(emoteId);
+  socket.emit('emote', { emoteId: e.id, label: e.label });
 }
 function showAllInFlash(){
   const el=document.getElementById('allin-flash'); if(!el) return;
   el.classList.remove('active'); void el.offsetWidth; el.classList.add('active');
 }
-function showSeatEmote(playerId,label){
+function showSeatEmote(playerId,label,emoteId){
   const seat=document.getElementById('seat-'+playerId); if(!seat) return;
-  const pop=document.createElement('div'); pop.className='emote-pop'; pop.textContent=label;
-  seat.appendChild(pop); setTimeout(()=>pop.remove(),2000);
+  const e = reactionById(emoteId || label);
+  const pop=document.createElement('div'); pop.className='emote-pop';
+  pop.innerHTML = `${renderReactionIcon(e.id)}<span class="react-label">${escHtml(e.label)}</span>`;
+  seat.appendChild(pop); setTimeout(()=>pop.remove(),2200);
 }
 
 function sendChat() {
@@ -2690,6 +2856,7 @@ socket.on('error', (data) => {
 // ============================================================ INIT
 createStars();
 loadAudioPrefs();
+setStoredProfile(getStoredProfile());
 syncAudio();
 const directRoom = new URLSearchParams(location.search).get('room');
 if (directRoom) {
