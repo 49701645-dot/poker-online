@@ -679,13 +679,13 @@ input{outline:none;font-family:inherit}
 #my-hand-controls{position:absolute;left:50%;bottom:76px;transform:translateX(-50%);z-index:75;display:flex!important;gap:8px;align-items:center;justify-content:center;pointer-events:auto}
 #my-hand-controls[style*="none"]{display:none!important}
 #my-stack-pill{display:none!important}
-#exchange-panel{position:absolute;left:50%;bottom:150px;transform:translateX(-50%);z-index:30;background:rgba(8,20,14,.94);border:1px solid rgba(201,168,76,.45);border-radius:14px;padding:12px;box-shadow:0 12px 40px rgba(0,0,0,.65);text-align:center;min-width:260px}
-#exchange-title{color:var(--gold2);font-weight:900;margin-bottom:6px}#exchange-counter{color:var(--text2);margin-bottom:8px}.card.exchange-selected{outline:3px solid #3498db;transform:translateY(-10px) scale(1.04)}
+#exchange-panel{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:115;background:rgba(8,20,14,.97);border:1px solid rgba(201,168,76,.55);border-radius:14px;padding:10px 12px;box-shadow:0 12px 40px rgba(0,0,0,.68);text-align:center;min-width:300px;max-width:min(92vw,520px)}
+#exchange-title{color:var(--gold2);font-weight:900;margin-bottom:3px}#exchange-help{color:var(--text2);font-size:.76rem;margin-bottom:5px}#exchange-counter{color:var(--text2);margin-bottom:8px;font-size:.82rem}#exchange-actions{display:flex;gap:8px;justify-content:center}.card.exchange-card{cursor:pointer}.card.exchange-selected{outline:3px solid #3498db;transform:translateY(-10px) scale(1.04);box-shadow:0 0 0 2px rgba(52,152,219,.22),0 8px 18px rgba(0,0,0,.45)}
 .sidebar-close{margin-left:auto;background:rgba(255,255,255,.08);color:var(--text);border-left:1px solid rgba(255,255,255,.08);padding:0 12px;font-size:1.2rem}.host-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.host-label,.host-grid label,.host-check{display:block;color:var(--text2);font-size:.82rem;margin:7px 0}.host-check input{margin-right:7px}
 .room-mode-pill{display:inline-block;padding:2px 7px;border-radius:999px;background:rgba(201,168,76,.16);color:var(--gold2);font-weight:800;font-size:.75rem;margin-left:6px}.mode-classic{background:rgba(52,152,219,.18);color:#7ec8ff}.mode-texas{background:rgba(201,168,76,.16);color:var(--gold2)}
 #community-area.classic-mode #community-cards:empty:before{content:'Póker clásico: sin cartas comunitarias';color:var(--text3);font-weight:700;letter-spacing:.06em}#community-area.classic-mode{min-height:84px}
 .seat.my-seat .seat-stack{display:block!important;color:var(--gold2);font-weight:900}.seat:not(.my-seat) .seat-stack.rival-hidden{display:none!important}.seat-status{font-size:.65rem;font-weight:800;color:var(--text2);background:rgba(0,0,0,.45);padding:2px 7px;border-radius:999px}.sidebar-hidden #game-sidebar{display:none!important}.sidebar-hidden #game-main{width:100%!important}
-@media(max-width:768px){#game-layout{display:block}#game-main{width:100%;height:100%}#game-sidebar.in-room{display:none}#game-sidebar.mobile-open{display:flex!important;position:fixed;right:0;top:0;bottom:0;z-index:100;width:min(86vw,300px);box-shadow:-20px 0 60px rgba(0,0,0,.8)}#table-wrap{width:98vw;height:calc(var(--vh,1vh)*56);margin-top:50px}#my-hand-controls{bottom:78px}.seat-stack{font-size:.62rem}.seat:not(.my-seat) .seat-stack{display:none!important}#exchange-panel{bottom:136px}.top-btn{padding:7px 9px;font-size:.75rem}.top-bar-left{min-width:0}.room-name-badge{max-width:115px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.card{width:34px!important;height:50px!important}.card-community{width:40px!important;height:58px!important}#actions-hud{bottom:4px}.actions-row{gap:5px}.action-btn{min-width:62px;padding:8px 8px;font-size:.75rem}}
+@media(max-width:768px){#game-layout{display:block}#game-main{width:100%;height:100%}#game-sidebar.in-room{display:none}#game-sidebar.mobile-open{display:flex!important;position:fixed;right:0;top:0;bottom:0;z-index:100;width:min(86vw,300px);box-shadow:-20px 0 60px rgba(0,0,0,.8)}#table-wrap{width:98vw;height:calc(var(--vh,1vh)*56);margin-top:50px}#my-hand-controls{bottom:78px}.seat-stack{font-size:.62rem}.seat:not(.my-seat) .seat-stack{display:none!important}#exchange-panel{bottom:10px;min-width:min(92vw,340px);padding:9px 10px}.top-btn{padding:7px 9px;font-size:.75rem}.top-bar-left{min-width:0}.room-name-badge{max-width:115px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.card{width:34px!important;height:50px!important}.card-community{width:40px!important;height:58px!important}#actions-hud{bottom:4px}.actions-row{gap:5px}.action-btn{min-width:62px;padding:8px 8px;font-size:.75rem}}
 @media(max-width:480px){#table-wrap{height:calc(var(--vh,1vh)*53);min-height:310px}.seat-avatar{width:34px;height:34px}.seat-name{max-width:62px;font-size:.58rem}.seat-cards{gap:1px}.card{width:30px!important;height:44px!important}.card-community{width:34px!important;height:50px!important}#pot-display{transform:scale(.86)}#my-stack-pill{padding:5px 9px;font-size:.78rem}.host-grid{grid-template-columns:1fr}.lobby-header{gap:6px}.lobby-search{max-width:120px}}
 
 
@@ -1072,9 +1072,12 @@ body.sidebar-hidden #game-sidebar.mobile-open{display:none!important;opacity:0!i
       </div>
       <div id="exchange-panel" style="display:none">
         <div id="exchange-title">Cambio de cartas</div>
-        <div id="exchange-counter">Seleccionadas: 0/3</div>
-        <button class="btn btn-gold btn-sm" onclick="confirmExchange()">Cambiar seleccionadas</button>
-        <button class="btn btn-ghost btn-sm" onclick="skipExchange()">No cambiar</button>
+        <div id="exchange-help">Tocá las cartas que querés descartar. Podés cambiar de 1 a 5 o quedarte servido.</div>
+        <div id="exchange-counter">Seleccionadas: 0/5</div>
+        <div id="exchange-actions">
+          <button class="btn btn-gold btn-sm" onclick="confirmExchange()">Cambiar seleccionadas</button>
+          <button class="btn btn-ghost btn-sm" onclick="skipExchange()">Quedarme servido</button>
+        </div>
       </div>
 
       <!-- Actions HUD -->
@@ -1288,9 +1291,9 @@ body.sidebar-hidden #game-sidebar.mobile-open{display:none!important;opacity:0!i
               <option value="0">0</option>
               <option value="1">1</option>
               <option value="2">2</option>
-              <option value="3" selected>3</option>
+              <option value="3">3</option>
               <option value="4">4</option>
-              <option value="5">5</option>
+              <option value="5" selected>5</option>
             </select>
           </div>
         </div>
@@ -1712,7 +1715,7 @@ function getCreateSettings(){
     bigBlind: parseInt(val('cr-bigBlind',200)) || 200,
     turnTimeout: parseInt(val('cr-turnTimeout',30000)) || 30000,
     reviveStack: parseInt(val('cr-reviveStack',500)) || 500,
-    maxCardsChange: parseInt(val('cr-maxCardsChange',3)),
+    maxCardsChange: document.getElementById('cr-gamemode')?.value === 'classic' ? 5 : parseInt(val('cr-maxCardsChange',5)),
     allowRevive: checked('cr-allowRevive', true),
     requireReviveVote: checked('cr-requireReviveVote', true),
     allowSpectators: checked('cr-allowSpectators', true),
@@ -2087,8 +2090,9 @@ function renderMyActions(gs) {
 
   if (isMyExchange) {
     hud.classList.add('hidden');
+    controls.style.display = 'none';
     exchangePanel.style.display = 'block';
-    const max = gs.settings?.maxCardsChange ?? 3;
+    const max = 5;
     document.getElementById('exchange-counter').textContent = `Seleccionadas: ${state.selectedExchangeCards.length}/${max}`;
     return;
   } else {
@@ -2205,7 +2209,7 @@ function statusLabel(p){
 }
 function toggleExchangeCard(idx){
   const gs = state.gameState;
-  const max = gs?.settings?.maxCardsChange ?? 3;
+  const max = gs?.gameMode === 'classic' ? 5 : (gs?.settings?.maxCardsChange ?? 5);
   const i = state.selectedExchangeCards.indexOf(idx);
   if (i >= 0) state.selectedExchangeCards.splice(i,1);
   else {
