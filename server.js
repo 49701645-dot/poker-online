@@ -194,7 +194,7 @@ function createRoom(id, name, hostId, hostName, password, maxPlayers, startingSt
       bigBlind: 200,
       turnTimeout: TURN_TIMEOUT,
       chatMode: 'full',
-      maxCardsChange: 3,
+      maxCardsChange: gameMode === 'classic' ? 5 : 3,
       showRivalStacksOnTable: false,
       compactMode: false,
       reducedAnimations: false,
@@ -571,7 +571,11 @@ function startNewHand(room) {
 
   gs.phase = room.gameMode === 'classic' ? 'drawbet1' : 'preflop';
   initializeBettingRound(room, false);
-  const first = nActive === 2 ? sbIdx : getNextActiveIndex(room, bbIdx);
+  // Póker clásico: la primera ronda empieza por el primer jugador vivo a la izquierda del dealer.
+  // Texas: mantiene el orden preflop habitual (heads-up: dealer/SB; 3+: izquierda de BB).
+  const first = room.gameMode === 'classic'
+    ? getNextActiveIndex(room, gs.dealerIndex)
+    : (nActive === 2 ? sbIdx : getNextActiveIndex(room, bbIdx));
   gs.currentPlayerIndex = first;
 
   emitLog(room, `Mano #${gs.handNumber} | Dealer: ${room.players[gs.dealerIndex]?.name} | SB: ${sbPlayer?.name} (${gs.smallBlind}) | BB: ${bbPlayer?.name} (${gs.bigBlind})`, 'info');
@@ -930,7 +934,7 @@ function startExchangePhase(room) {
   gs.exchangeIndex = 0;
   for (const p of room.players) { p.cardsSelected = []; p.hasExchanged = false; }
 
-  emitLog(room, `Fase de cambio. Máximo ${room.settings.maxCardsChange ?? 3} carta(s) por jugador.`, 'phase');
+  emitLog(room, 'Fase de cambio. Cada jugador puede cambiar de 0 a 5 cartas.', 'phase');
   proceedExchange(room);
 }
 
@@ -983,7 +987,7 @@ function handleExchangeAction(room, socketId, action, cardIndices) {
   if (!player || player.id !== socketId) return rejectAction(room, socketId, 'No es tu turno de cambiar cartas.');
   if (player.hasExchanged) return false;
 
-  const maxChange = room.settings.maxCardsChange ?? 3;
+  const maxChange = 5;
   const raw = Array.isArray(cardIndices) ? cardIndices : [];
   const indices = [...new Set(raw.filter(i => Number.isInteger(i) && i >= 0 && i < 5))].slice(0, maxChange);
   const discardedNow = indices.map(i => player.cards[i]).filter(Boolean);
@@ -1325,8 +1329,13 @@ function updateSettings(room, hostSocketId, settings) {
   }
   const revStack = validateNumber(settings.reviveStack, 100, 100000);
   if (revStack !== null) s.reviveStack = revStack;
-  const maxCC = validateNumber(settings.maxCardsChange, 0, 5);
-  if (maxCC !== null && room.state !== 'playing') s.maxCardsChange = maxCC;
+  if (room.gameMode === 'classic') {
+    // Five-Card Draw clásico permite quedarse servido o cambiar hasta las 5 cartas.
+    s.maxCardsChange = 5;
+  } else {
+    const maxCC = validateNumber(settings.maxCardsChange, 0, 5);
+    if (maxCC !== null && room.state !== 'playing') s.maxCardsChange = maxCC;
+  }
   emitLog(room, 'Configuración actualizada.', 'info');
   emitRoomState(room);
   return true;
