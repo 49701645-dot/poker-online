@@ -1,11 +1,12 @@
 {
   "name": "poker-online",
-  "version": "1.0.0",
-  "description": "Texas Hold'em Poker Online Multijugador",
+  "version": "6.1.0",
+  "description": "Royal Poker Online - Texas Hold'em y Poker Clasico V6.1 estabilidad",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "test": "node test_v6.js && node test_v6_async.js && node fuzz_v6.js && node test_v61.js"
   },
   "dependencies": {
     "express": "^4.18.2",

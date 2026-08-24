@@ -903,6 +903,48 @@ body.sidebar-hidden #game-sidebar.mobile-open{display:none!important;opacity:0!i
 @media(max-width:520px){.reaction-choice .react-icon.react-sticker{width:78px;height:62px}.emote-btn .react-icon.react-sticker{width:50px;height:40px}.emote-pop .react-icon.react-sticker{width:88px;height:68px}}
 
 
+
+
+/* ---- V5 FIX: lighter profile modal, smaller avatar previews, poker-specific reactions ---- */
+.profile-panel{max-height:min(88vh,760px);overflow:auto;overscroll-behavior:contain;}
+.profile-panel .form-group{margin-bottom:12px;}
+.profile-panel .profile-help{font-size:.78rem;}
+.profile-panel .choice-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;}
+.profile-panel .avatar-choice,.profile-panel .reaction-choice{min-height:58px;padding:7px;border-radius:12px;gap:4px;transition:border-color .12s,background .12s,box-shadow .12s;will-change:auto;}
+.profile-panel .avatar-choice:hover,.profile-panel .reaction-choice:hover{transform:none;}
+.profile-panel .avatar-choice .asset-avatar{width:42px;height:42px;filter:none;}
+.profile-panel .avatar-choice .avatar-initial{font-size:.78rem;}
+.profile-panel .avatar-choice small,.profile-panel .reaction-choice small{font-size:.58rem;line-height:1.05;max-width:78px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.profile-preview{padding:9px;margin-bottom:10px;}
+.profile-preview .seat-avatar{width:48px;height:48px;min-width:48px;}
+.profile-preview .asset-avatar{width:48px;height:48px;filter:none;}
+.react-icon.poker-rx{width:42px;height:30px;border-radius:9px;border:1px solid rgba(245,210,122,.5);background:linear-gradient(135deg,rgba(245,210,122,.18),rgba(12,18,22,.95));box-shadow:none;overflow:hidden;font-family:'Cinzel',serif;font-weight:900;color:var(--gold2);letter-spacing:.04em;font-size:.52rem;text-align:center;}
+.react-icon.poker-rx span{position:relative;z-index:2;line-height:1;}
+.react-icon.poker-rx::before{content:'';position:absolute;inset:3px;border:1px solid rgba(245,210,122,.18);border-radius:7px;}
+.react-icon.poker-rx::after{content:'';position:absolute;width:18px;height:18px;border-radius:50%;right:-6px;top:-6px;background:rgba(245,210,122,.16);}
+.rx-paso{background:linear-gradient(135deg,rgba(145,166,180,.18),rgba(8,12,14,.95));}
+.rx-pago{background:linear-gradient(135deg,rgba(70,135,91,.25),rgba(8,18,12,.95));}
+.rx-subo{background:linear-gradient(135deg,rgba(201,168,76,.28),rgba(28,18,6,.96));}
+.rx-allin{background:linear-gradient(135deg,rgba(170,45,32,.38),rgba(18,6,4,.96));color:#ffd28a;}
+.rx-farol{background:linear-gradient(135deg,rgba(120,70,170,.32),rgba(9,6,18,.96));}
+.rx-buena{background:linear-gradient(135deg,rgba(22,110,70,.32),rgba(5,18,12,.96));}
+.rx-mala{background:linear-gradient(135deg,rgba(90,100,110,.25),rgba(7,9,12,.96));}
+.rx-gg{background:linear-gradient(135deg,rgba(60,95,160,.3),rgba(7,10,20,.96));}
+.profile-panel .reaction-choice .react-icon.poker-rx{width:50px;height:34px;margin-bottom:1px;}
+.emote-btn .react-icon.poker-rx{width:44px;height:30px;margin:0 auto 4px;}
+.emote-pop{min-width:86px!important;min-height:54px!important;border-radius:14px!important;background:rgba(7,18,13,.94)!important;}
+.emote-pop .react-icon.poker-rx{width:58px;height:38px;transform:none;}
+.emote-pop .react-label{display:block!important;font-size:.56rem!important;}
+@media(max-width:520px){.profile-panel .choice-grid{grid-template-columns:repeat(4,1fr);gap:5px}.profile-panel .avatar-choice,.profile-panel .reaction-choice{padding:5px;min-height:54px}.profile-panel .avatar-choice .asset-avatar{width:36px;height:36px}.profile-panel .reaction-choice .react-icon.poker-rx{width:44px;height:30px}.profile-panel .avatar-choice small,.profile-panel .reaction-choice small{font-size:.52rem;max-width:56px}}
+
+
+/* ---- V6: avatar scale normalized ---- */
+.seat-avatar .asset-avatar{width:62%!important;height:62%!important;object-fit:contain!important;border-radius:50%;}
+.player-list-avatar .asset-avatar,.waiting-player-avatar .asset-avatar{width:82%!important;height:82%!important;object-fit:contain!important;}
+.profile-preview .asset-avatar{width:82%!important;height:82%!important;object-fit:contain!important;}
+.profile-panel .avatar-choice .asset-avatar{width:36px!important;height:36px!important;object-fit:contain!important;}
+.menu-settings-toggle{width:min(340px,90vw);margin-top:8px;}
+
 </style>
 </head>
 <body>
@@ -932,13 +974,14 @@ body.sidebar-hidden #game-sidebar.mobile-open{display:none!important;opacity:0!i
     <button class="menu-btn menu-btn-secondary" onclick="showJoinPrivate()"><span class="ico ico-lock"></span>Unirse con Código</button>
     <button class="menu-btn menu-btn-secondary" onclick="openProfileModal()"><span class="ico ico-edit"></span>Personalizar Perfil</button>
     <div class="current-name-pill" id="current-name-pill"></div>
-    <div class="menu-audio-panel">
-      <div class="menu-audio-head"><span><span class="ico ico-music"></span>Música del juego</span><button id="menu-audio-toggle" onclick="toggleAudioEnabled()">Activar</button></div>
+    <button class="menu-btn menu-btn-secondary menu-settings-toggle" onclick="toggleMenuSettings()"><span class="ico ico-settings"></span>Configuración</button>
+    <div class="menu-audio-panel" id="menu-settings-panel" style="display:none">
+      <div class="menu-audio-head"><span><span class="ico ico-settings"></span>Configuración</span><button id="menu-audio-toggle" onclick="toggleAudioEnabled()">Audio ON</button></div>
       <label class="menu-audio-row"><input type="checkbox" id="menu-audio-music" onchange="saveAudioPrefs(); syncAudio()"> Música</label>
       <label class="menu-audio-row"><input type="checkbox" id="menu-audio-effects" onchange="saveAudioPrefs()"> Efectos</label>
-      <label class="menu-audio-row">Música <input type="range" id="menu-audio-music-volume" min="0" max="100" value="18" oninput="saveAudioPrefs(); syncAudio()"></label>
-      <label class="menu-audio-row">Efectos <input type="range" id="menu-audio-effects-volume" min="0" max="100" value="35" oninput="saveAudioPrefs()"></label>
-      <div class="audio-note">La música arranca cuando tocás Activar y sigue también desde el menú.</div>
+      <label class="menu-audio-row">Volumen música <input type="range" id="menu-audio-music-volume" min="0" max="100" value="18" oninput="saveAudioPrefs(); syncAudio()"></label>
+      <label class="menu-audio-row">Volumen efectos <input type="range" id="menu-audio-effects-volume" min="0" max="100" value="35" oninput="saveAudioPrefs()"></label>
+      <div class="audio-note">La música está encendida por defecto y comienza con tu primera interacción, como exigen los navegadores.</div>
     </div>
   </div>
 </div>
@@ -975,18 +1018,18 @@ body.sidebar-hidden #game-sidebar.mobile-open{display:none!important;opacity:0!i
         <div class="top-bar-right">
           <button class="top-btn top-btn-eye" id="btn-copy-link" onclick="copyRoomLink()"><span class="ico ico-link"></span>Invitar</button>
           <button class="top-btn top-btn-eye" id="btn-open-sidebar" onclick="toggleSidebar()"><span class="ico ico-chat"></span>Chat</button>
-          <button class="top-btn top-btn-eye" id="btn-audio" onclick="toggleAudioPopover()"><span class="ico ico-audio"></span>Audio</button>
+          <button class="top-btn top-btn-eye" id="btn-audio" onclick="toggleAudioPopover()"><span class="ico ico-settings"></span>Configuración</button>
           <button class="top-btn top-btn-host" id="btn-host-panel" onclick="toggleHostPanel()" style="display:none"><span class="ico ico-settings"></span>Ajustes</button>
           <button class="top-btn top-btn-leave" onclick="confirmLeave()"><span class="ico ico-exit"></span>Salir</button>
         </div>
       </div>
       <div id="audio-popover">
-        <div class="audio-title"><span class="ico ico-audio"></span>Audio</div>
-        <div class="audio-row"><button class="top-btn top-btn-eye" id="audio-toggle" onclick="toggleAudioEnabled()">Activar audio</button></div>
+        <div class="audio-title"><span class="ico ico-settings"></span>Configuración</div>
+        <div class="audio-row"><button class="top-btn top-btn-eye" id="audio-toggle" onclick="toggleAudioEnabled()">Audio ON</button></div>
         <label class="audio-row"><input type="checkbox" id="audio-music" onchange="saveAudioPrefs(); syncAudio()"> Música</label>
         <label class="audio-row"><input type="checkbox" id="audio-effects" onchange="saveAudioPrefs()"> Efectos</label>
-        <label class="audio-row">Música <input type="range" id="audio-music-volume" min="0" max="100" value="18" oninput="saveAudioPrefs(); syncAudio()"></label>
-        <label class="audio-row">Efectos <input type="range" id="audio-effects-volume" min="0" max="100" value="35" oninput="saveAudioPrefs()"></label>
+        <label class="audio-row">Volumen música <input type="range" id="audio-music-volume" min="0" max="100" value="18" oninput="saveAudioPrefs(); syncAudio()"></label>
+        <label class="audio-row">Volumen efectos <input type="range" id="audio-effects-volume" min="0" max="100" value="35" oninput="saveAudioPrefs()"></label>
       </div>
 
       <!-- Table -->
@@ -1402,7 +1445,7 @@ const state = {
   activeAudioIndex: 0,
   musicCrossfadeTimer: null,
   musicRaf: null,
-  audio: { enabled:false, music:true, effects:true, musicVolume:18, effectsVolume:35 }
+  audio: { enabled:true, music:true, effects:true, musicVolume:18, effectsVolume:35 }
 };
 function setAppVh(){ document.documentElement.style.setProperty('--vh', (window.visualViewport?.height || window.innerHeight) * 0.01 + 'px'); }
 window.addEventListener('resize', setAppVh);
@@ -1422,19 +1465,28 @@ const AVATAR_OPTIONS = [
   {id:'noche', name:'Noche'}
 ];
 const REACTION_OPTIONS = [
-  {id:'farol', label:'FAROL'},
-  {id:'buena', label:'BUENA'},
-  {id:'fuego', label:'FUEGO'},
-  {id:'ficha', label:'FICHA'},
-  {id:'rey', label:'REY'},
-  {id:'risa', label:'RISA'},
-  {id:'sombra', label:'SOMBRA'},
-  {id:'golpe', label:'GOLPE'}
+  {id:'paso', label:'PASO', short:'CHECK'},
+  {id:'pago', label:'PAGO', short:'CALL'},
+  {id:'subo', label:'SUBO', short:'RAISE'},
+  {id:'allin', label:'ALL IN', short:'ALL'},
+  {id:'farol', label:'FAROL', short:'BLUFF'},
+  {id:'buena', label:'BUENA MANO', short:'HAND'},
+  {id:'mala', label:'MALA SUERTE', short:'BAD'},
+  {id:'gg', label:'GG', short:'GG'}
 ];
-const DEFAULT_EMOTES = ['farol','buena','fuego','ficha'];
+const DEFAULT_EMOTES = ['paso','pago','subo','allin'];
 function reactionById(id){ return REACTION_OPTIONS.find(e=>e.id===id) || REACTION_OPTIONS[0]; }
 function avatarById(id){ return AVATAR_OPTIONS.find(a=>a.id===id) || AVATAR_OPTIONS[0]; }
 function sanitizeProfileName(value){ return cleanName(value); }
+function getSessionToken(){
+  let token = sessionStorage.getItem('royalPokerSessionToken') || '';
+  if (!/^[a-zA-Z0-9_-]{16,80}$/.test(token)) {
+    const bytes = new Uint8Array(18); crypto.getRandomValues(bytes);
+    token = Array.from(bytes, b => b.toString(16).padStart(2,'0')).join('');
+    sessionStorage.setItem('royalPokerSessionToken', token);
+  }
+  return token;
+}
 function defaultProfile(){
   const name = cleanName(localStorage.getItem('pokerName') || '');
   return { name, avatarId: 'initial', emotes: DEFAULT_EMOTES.slice() };
@@ -1479,7 +1531,7 @@ function renderAvatar(id, name){
 function getAvatar(name, avatarId) { return renderAvatar(avatarId, name); }
 function renderReactionIcon(id){
   const em = reactionById(id);
-  return `<span class="react-icon react-sticker"><img src="assets/reactions/${escHtml(em.id)}.png" alt="${escHtml(em.label)}" loading="lazy" draggable="false"></span>`;
+  return `<span class="react-icon poker-rx rx-${escHtml(em.id)}"><span>${escHtml(em.short || em.label)}</span></span>`;
 }
 function openProfileModal(){
   const profile = getStoredProfile();
@@ -1519,7 +1571,6 @@ function previewProfile(){
   const nm = document.getElementById('profile-preview-name');
   if (av) av.innerHTML = renderAvatar(state.selectedAvatarId, name);
   if (nm) nm.textContent = name;
-  buildProfileChoices();
 }
 function saveProfileFromModal(){
   const name = sanitizeProfileName(document.getElementById('pf-playername').value);
@@ -1590,8 +1641,8 @@ function openNameGate(canClose=false) {
 function savePlayerName() {
   const name = cleanName(document.getElementById('ng-playername').value);
   if (name.length < 2) return showNotif('El nombre debe tener al menos 2 caracteres.', 'error');
-  const directOnly = !!state.pendingDirectRoom;
-  setStoredProfile({ name, avatarId: directOnly ? 'initial' : (state.selectedAvatarId || 'initial'), emotes: state.selectedEmoteIds?.length ? state.selectedEmoteIds : DEFAULT_EMOTES });
+  const stored = getStoredProfile();
+  setStoredProfile({ name, avatarId: state.selectedAvatarId || stored.avatarId || 'initial', emotes: state.selectedEmoteIds?.length ? state.selectedEmoteIds : (stored.emotes || DEFAULT_EMOTES) });
   document.getElementById('overlay-name-gate').classList.remove('active');
   updateCurrentNameUI();
   if (state.pendingDirectRoom || state.joinTargetRoom) {
@@ -1682,7 +1733,7 @@ function createRoom() {
 
   localStorage.setItem('pokerName', playerName);
   closeOverlay('overlay-create');
-  socket.emit('createRoom', { playerName, profile: getJoinProfile(), roomName, password, maxPlayers, startingStack, gameMode, settings });
+  socket.emit('createRoom', { playerName, profile: getJoinProfile(), sessionToken:getSessionToken(), roomName, password, maxPlayers, startingStack, gameMode, settings });
 }
 
 function joinPrivate() {
@@ -1693,7 +1744,7 @@ function joinPrivate() {
   if (!roomId) return showNotif('Ingresa el ID de sala', 'error');
   localStorage.setItem('pokerName', playerName);
   closeOverlay('overlay-join-private');
-  socket.emit('joinRoom', { playerName, profile: getJoinProfile(), roomId, password });
+  socket.emit('joinRoom', { playerName, profile: getJoinProfile(), sessionToken:getSessionToken(), roomId, password });
 }
 
 // ============================================================ LOBBY / ROOMS
@@ -1773,7 +1824,7 @@ function joinRoom() {
   if (!roomId) return;
   localStorage.setItem('pokerName', playerName);
   closeOverlay('overlay-join');
-  socket.emit('joinRoom', { playerName, profile: getJoinProfile(), roomId, password });
+  socket.emit('joinRoom', { playerName, profile: getJoinProfile(), sessionToken:getSessionToken(), roomId, password });
 }
 
 // ============================================================ GAME SCREEN SETUP
@@ -1810,7 +1861,7 @@ function renderGameState(gs) {
   document.getElementById('room-name-display').textContent = gs.roomName;
   document.getElementById('hand-badge').textContent = gs.gameState ? `Mano #${gs.gameState.handNumber}` : 'Sala';
 
-  const phaseNames = { waiting:'Esperando', preflop:'Pre-Flop', flop:'Flop', turn:'Turn', river:'River', exchange:'Cambio de cartas', postexchange:'Apuestas finales', showdown:'Showdown' };
+  const phaseNames = { waiting:'Esperando', preflop:'Pre-Flop', flop:'Flop', turn:'Turn', river:'River', drawbet1:'1ª ronda de apuestas', exchange:'Cambio de cartas', drawbet2:'2ª ronda de apuestas', showdown:'Showdown' };
   const phase = gs.gameState?.phase || 'waiting';
   document.getElementById('phase-text').textContent = gs.paused ? 'Pausado' : (phaseNames[phase] || phase);
 
@@ -1920,25 +1971,22 @@ function renderSeats(gs) {
   const table = document.getElementById('table-wrap');
   table.querySelectorAll('.seat').forEach(s => s.remove());
 
-  const sourcePlayers = (gs.players || []).filter(p => !p.waitingNextHand);
+  const sourcePlayers = (gs.players || []).map((player, serverIndex) => ({player, serverIndex})).filter(x => !x.player.left);
   const gstate = gs.gameState;
   if (!sourcePlayers.length) return;
 
-  // Render relativo al usuario: el jugador local SIEMPRE abajo. Esto evita que ambos vean la misma perspectiva.
-  let myOriginalIndex = sourcePlayers.findIndex(p => p.id === gs.myId);
+  // Render relativo al usuario, but preserve the server seat/index identity even when players are OUT/waiting.
+  let myDisplayIndex = sourcePlayers.findIndex(x => x.player.id === gs.myId);
   let displayOrder = [];
-  if (myOriginalIndex >= 0 && !gs.isSpectator) {
-    for (let step = 0; step < sourcePlayers.length; step++) {
-      const originalIndex = (myOriginalIndex + step) % sourcePlayers.length;
-      displayOrder.push({ player: sourcePlayers[originalIndex], originalIndex });
-    }
+  if (myDisplayIndex >= 0 && !gs.isSpectator) {
+    for (let step = 0; step < sourcePlayers.length; step++) displayOrder.push(sourcePlayers[(myDisplayIndex + step) % sourcePlayers.length]);
   } else {
-    displayOrder = sourcePlayers.map((player, originalIndex) => ({ player, originalIndex }));
+    displayOrder = sourcePlayers.slice();
   }
 
   const positions = getSeatPositions(displayOrder.length);
 
-  displayOrder.forEach(({player, originalIndex}, displayIdx) => {
+  displayOrder.forEach(({player, serverIndex: originalIndex}, displayIdx) => {
     const pos = positions[displayIdx];
     const seat = document.createElement('div');
     seat.className = 'seat ' + (pos.cls || '');
@@ -1947,10 +1995,10 @@ function renderSeats(gs) {
     seat.style.top = pos.y + '%';
 
     const isMe = player.id === gs.myId;
-    const isActive = gstate && gstate.currentPlayerIndex === originalIndex && !player.folded && !player.allIn;
-    const isDealer = gstate && gstate.dealerIndex === originalIndex;
-    const isSB = gstate && gstate.smallBlindIndex === originalIndex;
-    const isBB = gstate && gstate.bigBlindIndex === originalIndex;
+    const isActive = gstate && (gstate.currentPlayerId ? gstate.currentPlayerId === player.id : gstate.currentPlayerIndex === originalIndex) && !player.folded && !player.allIn;
+    const isDealer = gstate && (gstate.dealerId ? gstate.dealerId === player.id : gstate.dealerIndex === originalIndex);
+    const isSB = gstate && (gstate.smallBlindId ? gstate.smallBlindId === player.id : gstate.smallBlindIndex === originalIndex);
+    const isBB = gstate && (gstate.bigBlindId ? gstate.bigBlindId === player.id : gstate.bigBlindIndex === originalIndex);
 
     if (isMe) seat.classList.add('my-seat');
     if (isActive) seat.classList.add('active-turn');
@@ -1969,7 +2017,7 @@ function renderSeats(gs) {
           const cardEl = buildCard(c, false, ci*90);
           cardEl.style.width = '42px';
           cardEl.style.height = '58px';
-          if (isMe && gs.gameMode === 'classic' && gs.gameState?.phase === 'exchange' && gs.gameState?.exchangePlayerIndex === originalIndex) {
+          if (isMe && gs.gameMode === 'classic' && gs.gameState?.phase === 'exchange' && (gs.gameState?.exchangePlayerId ? gs.gameState.exchangePlayerId === player.id : gs.gameState?.exchangePlayerIndex === originalIndex)) {
             cardEl.classList.add('exchange-card');
             if (state.selectedExchangeCards.includes(ci)) cardEl.classList.add('exchange-selected');
             cardEl.setAttribute('onclick', `toggleExchangeCard(${ci})`);
@@ -2034,8 +2082,8 @@ function renderMyActions(gs) {
   }
 
   const myIdx = gs.players.indexOf(myP);
-  const isMyTurn = gstate.currentPlayerIndex === myIdx && !myP.folded && !myP.allIn;
-  const isMyExchange = gs.gameMode === 'classic' && gstate.phase === 'exchange' && gstate.exchangePlayerIndex === myIdx && !myP.hasExchanged;
+  const isMyTurn = (gstate.currentPlayerId ? gstate.currentPlayerId === myP.id : gstate.currentPlayerIndex === myIdx) && !myP.folded && !myP.allIn;
+  const isMyExchange = gs.gameMode === 'classic' && gstate.phase === 'exchange' && (gstate.exchangePlayerId ? gstate.exchangePlayerId === myP.id : gstate.exchangePlayerIndex === myIdx) && !myP.hasExchanged;
 
   if (isMyExchange) {
     hud.classList.add('hidden');
@@ -2057,9 +2105,11 @@ function renderMyActions(gs) {
   document.getElementById('btn-check').style.display = canCheck ? 'block' : 'none';
   document.getElementById('btn-call').style.display = !canCheck && callAmount > 0 ? 'block' : 'none';
   if (!canCheck) document.getElementById('btn-call').textContent = `Call ${formatChips(Math.min(callAmount, myP.stack))}`;
-  document.getElementById('btn-raise').style.display = myP.stack > callAmount ? 'block' : 'none';
-
   const minRaise = gstate.minRaise || gstate.bigBlind;
+  const canRaise = myP.canRaise !== false && myP.stack >= callAmount + minRaise;
+  document.getElementById('btn-raise').style.display = canRaise ? 'block' : 'none';
+  const canAllIn = myP.stack > 0 && (myP.stack <= callAmount || myP.canRaise !== false);
+  document.getElementById('btn-allin').style.display = canAllIn ? 'block' : 'none';
   const defaultRaise = Math.max(minRaise, gstate.bigBlind);
   if (!document.getElementById('raise-input').dataset.touched) document.getElementById('raise-input').value = defaultRaise;
 }
@@ -2328,10 +2378,16 @@ function setRaisePreset(type) {
   if (!gs?.gameState) return;
   const pot = gs.gameState.pot;
   const bb = gs.gameState.bigBlind;
-  let val = bb;
-  if (type === 'half') val = Math.max(bb, Math.floor(pot/2));
-  else if (type === 'pot') val = Math.max(bb, pot);
-  else if (type === '2x') val = bb * 2;
+  const minRaise = gs.gameState.minRaise || bb;
+  const me = gs.players.find(p => p.id === gs.myId);
+  const currentBet = gs.gameState.currentBet || 0;
+  const myBet = me?.bet || 0;
+  const callAmount = Math.max(0, currentBet - myBet);
+  // Server expects the raise INCREMENT above the current bet, not the final total.
+  let val = minRaise;
+  if (type === 'half') val = Math.max(minRaise, Math.floor((pot + callAmount) / 2));
+  else if (type === 'pot') val = Math.max(minRaise, pot + callAmount);
+  else if (type === '2x') val = Math.max(minRaise, Math.max(0, bb * 2 - currentBet));
   document.getElementById('raise-input').value = val;
   document.getElementById('raise-input').dataset.touched = '1';
 }
@@ -2524,7 +2580,7 @@ function renderShowdown(data) {
       let cards = '<div class="showdown-player-cards">';
       (p.cards || []).forEach(c => { cards += buildCard(c,false).outerHTML; });
       cards += '</div>';
-      row.innerHTML = `<span><strong>${escHtml(p.name)}</strong><br><span class="showdown-handline">${escHtml(p.hand || '-')}</span></span>${cards}`;
+      row.innerHTML = `<span><strong>${escHtml(p.name)}</strong><br><span class="showdown-handline">${escHtml(p.mucked ? 'No mostró' : (p.hand || '-'))}</span></span>${cards}`;
       all.appendChild(row);
     });
     grid.appendChild(all);
@@ -2635,6 +2691,12 @@ function loadAudioPrefs(){
   try {
     const raw = localStorage.getItem('royalPokerAudio');
     if (raw) state.audio = { ...state.audio, ...JSON.parse(raw) };
+    // V6 migration: audio starts enabled by default once, then respects the player's preference.
+    if (!localStorage.getItem('royalPokerAudioV6')) {
+      state.audio.enabled = true;
+      localStorage.setItem('royalPokerAudioV6', '1');
+      localStorage.setItem('royalPokerAudio', JSON.stringify(state.audio));
+    }
   } catch(e) {}
   syncAudioControls();
   updateAudioButton();
@@ -2663,6 +2725,7 @@ function saveAudioPrefs(){
   updateAudioButton();
 }
 function toggleAudioPopover(){ document.getElementById('audio-popover')?.classList.toggle('active'); }
+function toggleMenuSettings(){ const p=document.getElementById('menu-settings-panel'); if(p) p.style.display = p.style.display==='none' ? 'block' : 'none'; }
 function toggleAudioEnabled(){
   state.audio.enabled = !state.audio.enabled;
   localStorage.setItem('royalPokerAudio', JSON.stringify(state.audio));
@@ -2672,8 +2735,8 @@ function toggleAudioEnabled(){
 }
 function updateAudioButton(){
   const btn=document.getElementById('btn-audio');
-  if(btn) btn.innerHTML = '<span class="ico ico-audio"></span>Audio';
-  for (const c of audioControls()) if(c.t) c.t.textContent = state.audio.enabled ? 'Desactivar' : 'Activar';
+  if(btn) btn.innerHTML = '<span class="ico ico-settings"></span>Configuración';
+  for (const c of audioControls()) if(c.t) c.t.textContent = state.audio.enabled ? 'Audio ON' : 'Audio OFF';
 }
 function musicTargetVolume(){ return Math.max(0, Math.min(1, (state.audio.musicVolume||0)/100)); }
 function initMusicPlayers(){
@@ -2703,9 +2766,9 @@ async function startMusic(){
   const vol = musicTargetVolume();
   a.volume = vol;
   if (a.paused) {
-    try { await a.play(); } catch(e) { return; }
+    try { await a.play(); state.audioReady = true; } catch(e) { return; }
   }
-  scheduleMusicCrossfade();
+  if (!state.musicCrossfadeTimer && !state.musicRaf) scheduleMusicCrossfade();
 }
 function scheduleMusicCrossfade(){
   if (state.musicCrossfadeTimer) clearTimeout(state.musicCrossfadeTimer);
@@ -2717,7 +2780,10 @@ function scheduleMusicCrossfade(){
     state.musicCrossfadeTimer = setTimeout(crossfadeMusic, delay);
   };
   if (Number.isFinite(a.duration) && a.duration > 15) schedule();
-  else a.addEventListener('loadedmetadata', schedule, { once:true });
+  else if (!a.datasetCrossfadePending) {
+    a.datasetCrossfadePending = '1';
+    a.addEventListener('loadedmetadata', () => { a.datasetCrossfadePending = ''; schedule(); }, { once:true });
+  }
 }
 function crossfadeMusic(){
   if (!state.audio.enabled || !state.audio.music || state.audioPlayers.length < 2) return;
@@ -2776,6 +2842,14 @@ function playSfx(type='chip'){
   gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime+0.16);
   osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime+0.18);
 }
+
+function unlockAudioFromGesture(){
+  if (!state.audio.enabled) return;
+  initAudio();
+  syncAudio();
+}
+document.addEventListener('pointerdown', unlockAudioFromGesture, {capture:true});
+document.addEventListener('keydown', unlockAudioFromGesture, {capture:true});
 
 // ============================================================ SIDEBAR TABS
 function switchTab(tab) {
